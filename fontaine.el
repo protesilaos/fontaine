@@ -222,6 +222,13 @@ Use the desired preset with the command `fontaine-set-preset'."
                   ((const :tag "Line spacing" :line-spacing) ,(get 'line-spacing 'custom-type))))
           :key-type symbol))
 
+(defcustom fontaine-latest-state-file
+  (locate-user-emacs-file "fontaine-latest-state.eld")
+  "File to save the value of `fontaine-set-preset'.
+Saving is done by the `fontaine-store-latest-preset' function."
+  :type 'file
+  :group 'fontaine)
+
 ;;;; General utilities
 
 (defun fontaine--set-face-attributes (face family &optional weight height)
@@ -340,6 +347,7 @@ outright, else prompt with completion."
     (fontaine--apply-bold-preset preset)
     (fontaine--apply-italic-preset preset)
     (setq fontaine--current-preset preset)
+    (add-to-history 'fontaine--preset-history (format "%s" preset))
     (run-hooks 'fontaine-set-preset-hook)))
 
 ;;;; Modify individual faces
@@ -474,6 +482,40 @@ inherits from those faces instead (e.g. the `modus-themes')."
     ('italic (fontaine--set-italic))
     ('variable-pitch (fontaine--set-variable-pitch))
     (_ (call-interactively #'fontaine-set-preset))))
+
+;;;; Store and restore preset
+
+(defvar fontaine--preset-history '()
+  "Minibuffer history of preset configurations.")
+
+;;;###autoload
+(defun fontaine-store-latest-preset ()
+  "Write latest cursor state to `fontaine-latest-state-file'.
+Can be assigned to `kill-emacs-hook'."
+  (when-let ((hist fontaine--preset-history))
+    (with-temp-file fontaine-latest-state-file
+      (insert ";; Auto-generated file; don't edit -*- mode: "
+              (if (<= 28 emacs-major-version)
+                  "lisp-data"
+                "emacs-lisp")
+              " -*-\n")
+      (pp (intern (car hist)) (current-buffer)))))
+
+(defvar fontaine-recovered-preset nil
+  "Recovered value of latest store cursor preset.")
+
+;;;###autoload
+(defun fontaine-restore-latest-preset ()
+  "Restore latest preset set by `fontaine-set-preset'."
+  (when-let* ((file fontaine-latest-state-file)
+              ((file-exists-p file)))
+    (setq fontaine-recovered-preset
+          (unless (zerop
+                   (or (file-attribute-size (file-attributes file))
+                       0))
+            (with-temp-buffer
+              (insert-file-contents file)
+              (read (current-buffer)))))))
 
 
 (provide 'fontaine)
