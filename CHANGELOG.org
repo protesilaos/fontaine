@@ -1,0 +1,19 @@
+#+TITLE: Change log of fontaine.el
+#+AUTHOR: Protesilaos Stavrou
+#+EMAIL: info@protesilaos.com
+#+OPTIONS: ':nil toc:nil num:nil author:nil email:nil
+
+This document contains the release notes for each tagged commit on the
+project's main git repository: <https://git.sr.ht/~protesilaos/fontaine>.
+
+The newest release is at the top.  For further details, please consult
+the manual: <https://protesilaos.com/emacs/fontaine>.
+
+* Version 0.1.0 on 2022-04-26
+
+Initial release of the package.  Please read the manual.
+
+The core idea for this package was implemented in the =prot-fonts.el=
+file that is part of [[https://gitlab.com/protesilaos/dotfiles][my dotfiles]] (now deprecated).  I was using it at
+least since November 2020, though the underlying code was probably
+implemented at an earlier date.
