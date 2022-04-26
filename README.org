@@ -225,7 +225,7 @@ Remember to read the relevant doc strings.
 ;; respects the key binding conventions.  Evaluate:
 ;;
 ;;     (info "(elisp) Key Binding Conventions")
-(define-key global-map (kbd "C-c p") #'fontaine-set-preset)
+(define-key global-map (kbd "C-c f") #'fontaine-set-preset)
 #+end_src
 
 * GNU Free Documentation License
