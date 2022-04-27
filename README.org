@@ -122,8 +122,18 @@ command is for interactive use only and is supposed to be used for
 previewing certain styles before eventually codifying them as presets.
 
 Changing the ~bold~ and ~italic~ faces only has a noticeable effect if
-the underlying does not hardcode a weight and slant but inherits from
-those faces instead (e.g. the ~modus-themes~).
+the underlying theme does not hardcode a weight and slant but inherits
+from those faces instead (e.g. the ~modus-themes~).
+
+#+vindex: fontaine-latest-state-file
+#+findex: fontaine-store-latest-preset
+#+findex: fontaine-restore-latest-preset
+The latest value of ~fontaine-set-preset~ is stored in a file whose
+location is defined in ~fontaine-latest-state-file~.  Saving is done by
+the ~fontaine-store-latest-preset~ function, which should be assigned to
+a hook (e.g. ~kill-emacs-hook~).  To restore that value, the user can
+call the function ~fontaine-restore-latest-preset~ (such as by adding it
+to their init file).
 
 As for the name of this package, it is the French word for "fountain"
 which, in turn, is what the font or source is.  However, I will not
@@ -189,6 +199,9 @@ Remember to read the relevant doc strings.
 #+begin_src emacs-lisp
 (require 'fontaine)
 
+(setq fontaine-latest-state-file
+      (locate-user-emacs-file "fontaine-latest-state.eld"))
+
 (setq fontaine-presets
       '((regular
          :default-family "Hack"
@@ -221,11 +234,23 @@ Remember to read the relevant doc strings.
          :italic-slant italic
          :line-spacing 1)))
 
+(fontaine-restore-latest-preset)
+
+;; Use `fontaine-recovered-preset' if available, else fall back to the
+;; desired style from `fontaine-presets'.
+(if-let ((state fontaine-recovered-preset))
+    (fontaine-set-preset state)
+  (fontaine-set-preset 'regular))
+
+;; The other side of `fontaine-restore-latest-preset'.
+(add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+
 ;; fontaine does not define any key bindings.  This is just a sample that
 ;; respects the key binding conventions.  Evaluate:
 ;;
 ;;     (info "(elisp) Key Binding Conventions")
 (define-key global-map (kbd "C-c f") #'fontaine-set-preset)
+(define-key global-map (kbd "C-c F") #'fontaine-set-face-font)
 #+end_src
 
 * GNU Free Documentation License
