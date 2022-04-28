@@ -533,6 +533,5 @@ The value is stored in `fontaine-latest-state-file'."
               (insert-file-contents file)
               (read (current-buffer)))))))
 
-
 (provide 'fontaine)
 ;;; fontaine.el ends here
