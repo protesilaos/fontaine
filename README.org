@@ -113,9 +113,14 @@ such as:
 #+end_src
 
 #+findex: fontaine-set-face-font
+#+vindex: fontaine-font-families
 The command ~fontaine-set-face-font~ prompts with completion for a face
 and then asks the user to specify the value of the relevant properties.
-The list of faces to choose from is the same as that implied by the
+Preferred font families can be defined in the user option
+~fontaine-font-families~, otherwise Fontaine will try to find suitable
+options among the fonts installed on the system (not always reliable,
+depending on the Emacs build and environment it runs in).  The list of
+faces to choose from is the same as that implied by the
 ~fontaine-presets~.  Properties to change and their respective values
 will depend on the face.  For example, the ~default~ face requires a
 natural number for its height attribute, whereas every other face needs

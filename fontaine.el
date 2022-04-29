@@ -66,7 +66,11 @@
 ;;
 ;; The command `fontaine-set-face-font' prompts with completion for a face
 ;; and then asks the user to specify the value of the relevant properties.
-;; The list of faces to choose from is the same as that implied by the
+;; Preferred font families can be defined in the user option
+;; `fontaine-font-families', otherwise Fontaine will try to find suitable
+;; options among the fonts installed on the system (not always reliable,
+;; depending on the Emacs build and environment it runs in).  The list of
+;; faces to choose from is the same as that implied by the
 ;; `fontaine-presets'.  Properties to change and their respective values
 ;; will depend on the face.  For example, the `default' face requires a
 ;; natural number for its height attribute, whereas every other face needs
@@ -256,6 +260,42 @@ This is then used to restore the last value with the function
   :type 'file
   :group 'fontaine)
 
+(defcustom fontaine-font-families nil
+  "An alist of preferred font families.
+
+The expected value of this option is a triplet of cons cells
+where the car is `default', `fixed-pitch', or `variable-pitch'
+and the cdr is a list of strings that reference font family
+names.  For example:
+
+    (setq fontaine-font-families
+          \\='((default \"Iosevka Comfy\" \"Hack\" \"Roboto Mono\")
+            (fixed-pitch \"Mononoki\" \"Source Code Pro\" \"Fira Code\")
+            (variable-pitch \"Noto Sans\" \"Roboto\" \"FiraGO\")))
+
+
+This is used at the minibuffer prompt while using the command
+`fontaine-set-face-font' to prompt for a font family.  When this
+user option is nil, that prompt will try to find all relevant
+fonts installed on the system, which might not always be
+reliable (depending on the Emacs build and the environment it
+runs in).
+
+If only the `default' is nil and the others are specified, the
+command `fontaine-set-face-font' will produce results that
+combine the other two lists."
+  :type '(set
+          (cons :tag "Default font families"
+                (const default)
+                (repeat string))
+          (cons :tag "Fixed pitch font families"
+                (const fixed-pitch)
+                (repeat string))
+          (cons :tag "Variable pitch font families"
+                (const variable-pitch)
+                (repeat string)))
+  :group 'fontaine)
+
 ;;;; General utilities
 
 (defun fontaine--set-face-attributes (face family &optional weight height)
@@ -267,7 +307,7 @@ This is then used to restore the last value with the function
     ;; ;; Hence why the following fails.  Keeping it for posterity...
     ;; (set-face-attribute face nil :family family :weight weight :height height)
     (if (eq (face-attribute face :weight) weight)
-          (internal-set-lisp-face-attribute face :family family 0)
+        (internal-set-lisp-face-attribute face :family family 0)
       (internal-set-lisp-face-attribute face :weight weight 0)
       (internal-set-lisp-face-attribute face :family family 0)
       (internal-set-lisp-face-attribute face :weight weight 0))
@@ -395,8 +435,12 @@ outright, else prompt with completion."
 (defvar fontaine--face-history '()
   "Minibuffer history of `fontaine-set-face-font'.")
 
-(defvar fontaine--font-family-history '()
-  "Minibuffer history of selected font families.")
+(define-obsolete-variable-alias
+  'fontaine--font-family-history
+  'fontaine--default-font-family-history "2022-04-29")
+
+(defvar fontaine--default-font-family-history '()
+  "Minibuffer history of selected `default' font families.")
 
 ;; We have `font-family-list', which is unfiltered.
 (defun fontaine--family-list-fixed-pitch (&optional frame)
@@ -437,44 +481,59 @@ Target FRAME, if provided as an optional argument."
 
 (defun fontaine--set-default ()
   "Set `default' attributes interactively."
-  (let ((family (completing-read "Font family of `default' face: "
-                                 (font-family-list) nil t
-                                 nil 'fontaine--font-family-history))
-        (weight (intern (completing-read "Select weight for `default': "
-                                         fontaine--font-weights nil)))
-        (height (read-number "Height of `default' face (must be a natural number): "
-                             nil 'fontaine--natnum-history)))
+  (let* ((families (or (alist-get 'default fontaine-font-families)
+                       (append (alist-get 'fixed-pitch fontaine-font-families)
+                               (alist-get 'variable-pitch fontaine-font-families))
+                       (font-family-list)))
+         (family (completing-read "Font family of `default' face: "
+                                  families nil t
+                                  nil 'fontaine--default-font-family-history))
+         (weight (intern (completing-read "Select weight for `default': "
+                                          fontaine--font-weights nil)))
+         (height (read-number "Height of `default' face (must be a natural number): "
+                              (or (string-to-number (nth 0 fontaine--natnum-history)))
+                              'fontaine--natnum-history)))
     (if (natnump height)
-        (fontaine--set-face-attributes 'default family weight)
+        (fontaine--set-face-attributes 'default family weight height)
       (user-error "Height of `default' face must be a natural number"))))
 
 (defvar fontaine--float-history '()
   "Minibuffer history for floating point numbers.")
 
+(defvar fontaine--fixed-pitch-font-family-history '()
+  "Minibuffer history of selected `fixed-pitch' font families.")
+
 (defun fontaine--set-fixed-pitch ()
   "Set `fixed-pitch' attributes interactively."
-  (let ((family (completing-read "Font family of `fixed-pitch': "
-                                 (fontaine--family-list-fixed-pitch) nil t
-                                 nil 'fontaine--font-family-history))
-        (weight (intern (completing-read "Select weight for `fixed-pitch': "
-                                         fontaine--font-weights nil)))
-        (height (read-number "Height of `fixed-pitch' face (must be a floating point): "
-                             1.0 'fontaine--float-history)))
+  (let* ((families (or (alist-get 'fixed-pitch fontaine-font-families)
+                       (fontaine--family-list-fixed-pitch)))
+         (family (completing-read "Font family of `fixed-pitch': "
+                                  families nil t nil
+                                  'fontaine--fixed-pitch-font-family-history))
+         (weight (intern (completing-read "Select weight for `fixed-pitch': "
+                                          fontaine--font-weights nil)))
+         (height (read-number "Height of `fixed-pitch' face (must be a floating point): "
+                              1.0 'fontaine--float-history)))
     (if (floatp height)
-        (fontaine--set-face-attributes 'fixed-pitch family weight)
+        (fontaine--set-face-attributes 'fixed-pitch family weight height)
       (user-error "Height of `fixed-pitch' face must be a floating point"))))
+
+(defvar fontaine--variable-pitch-font-family-history '()
+  "Minibuffer history of selected `variable-pitch' font families.")
 
 (defun fontaine--set-variable-pitch ()
   "Set `variable-pitch' attributes interactively."
-  (let ((family (completing-read "Font family of `variable-pitch': "
-                                 (fontaine--family-list-variable-pitch) nil t
-                                 nil 'fontaine--font-family-history))
-        (weight (intern (completing-read "Select weight for `variable-pitch': "
-                                         fontaine--font-weights nil)))
-        (height (read-number "Height of `variable-pitch' face (must be a floating point): "
-                             1.0 'fontaine--float-history)))
+  (let* ((families (or (alist-get 'variable-pitch fontaine-font-families)
+                       (fontaine--family-list-variable-pitch)))
+         (family (completing-read "Font family of `variable-pitch': "
+                                  families nil t nil
+                                  'fontaine--variable-pitch-font-family-history))
+         (weight (intern (completing-read "Select weight for `variable-pitch': "
+                                          fontaine--font-weights nil)))
+         (height (read-number "Height of `variable-pitch' face (must be a floating point): "
+                              1.0 'fontaine--float-history)))
     (if (floatp height)
-        (fontaine--set-face-attributes 'variable-pitch family weight)
+        (fontaine--set-face-attributes 'variable-pitch family weight height)
       (user-error "Height of `variable-pitch' face must be a floating point"))))
 
 (defun fontaine--set-bold ()
@@ -491,13 +550,28 @@ Target FRAME, if provided as an optional argument."
 
 ;;;###autoload
 (defun fontaine-set-face-font (face)
-  "Set font and other attributes of FACE.
-If FACE is not part of `fontaine--font-faces', fall back to
-calling `fontaine-set-preset'.
+  "Set font and/or other attributes of FACE.
 
-Changing the `bold' and `italic' faces only has a noticeable
-effect if the underlying does not hardcode a weight and slant but
-inherits from those faces instead (e.g. the `modus-themes')."
+When called interactively, prompt for FACE and then continue
+prompting for the relevant face attributes each of which depends
+on the FACE (for example, the `default' FACE accepts a family, a
+height as a natural number, and a weight, whereas `bold' only
+accepts a weight).
+
+With regard to the font family that some faces accept, the
+candidates are those specified in the user option
+`fontaine-font-families'.  If none are specified, try to find
+relevant installed fonts and provide them as completion
+candidates.
+
+Note that changing the `bold' and `italic' faces only has a
+noticeable effect if the underlying does not hardcode a weight
+and slant but inherits from those faces instead (e.g. the
+`modus-themes').
+
+When called from Lisp (albeit discouraged), if FACE is not part
+of `fontaine--font-faces', fall back to interactively calling
+`fontaine-set-preset'."
   (declare (interactive-only t))
   (interactive
    (list
