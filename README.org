@@ -97,7 +97,9 @@ together):
  :line-spacing 1)
 #+end_src
 
-The doc string of ~fontaine-presets~ explains all properties in detail.
+The doc string of ~fontaine-presets~ explains all properties in detail
+and documents some important caveats or information about font settings
+in Emacs.
 
 #+findex: fontaine-set-preset
 The command ~fontaine-set-preset~ applies the desired preset.  If there
@@ -252,6 +254,18 @@ Remember to read the relevant doc strings.
 (define-key global-map (kbd "C-c f") #'fontaine-set-preset)
 (define-key global-map (kbd "C-c F") #'fontaine-set-face-font)
 #+end_src
+
+* Acknowledgements
+:PROPERTIES:
+:CUSTOM_ID: h:3cf30d7d-e0a0-4835-8f25-570bab6cc3ed
+:END:
+#+cindex: Contributors
+
+Fontaine is meant to be a collective effort.  Every bit of help matters.
+
++ Author/maintainer :: Protesilaos Stavrou.
+
++ Contributions to the code or manual :: Eli Zaretskii.
 
 * GNU Free Documentation License
 :PROPERTIES:

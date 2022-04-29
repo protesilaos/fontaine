@@ -52,7 +52,9 @@
 ;;      :italic-slant italic
 ;;      :line-spacing 1)
 ;;
-;; The doc string of `fontaine-presets' explains all properties in detail.
+;; The doc string of `fontaine-presets' explains all properties in detail
+;; and documents some important caveats or information about font settings
+;; in Emacs.
 ;;
 ;; The command `fontaine-set-preset' applies the desired preset.  If there
 ;; is only one available, it implements it outright.  Otherwise it produces
@@ -190,18 +192,28 @@ The properties in detail:
 - The `:line-spacing' specifies the value of the `line-spacing'
   variable.
 
-Note that all the properties for `bold' and `italic' will only
-have a noticeable effect if the active theme does not hardcode a
-weight and a slant, but instead inherits the relevant face (such
-as the `modus-themes').
+Use the desired preset with the command `fontaine-set-preset'.
 
-Also note that a height attribute for anything other than the
-`default' face must be set to a floating point, which is
-understood as a multiple of the default height (this allows all
-faces to scale harmoniously).  The `:default-height' always is a
-natural number.
+Caveats or further notes:
 
-Use the desired preset with the command `fontaine-set-preset'."
+- On a Windows system, setting a `default' weight other than
+  `regular' or `normal' will not work.  This is a limitation with
+  Emacs on that system.
+
+- All the properties for `bold' and `italic' will only have a
+  noticeable effect if the active theme does not hardcode a
+  weight and a slant, but instead inherits the relevant
+  face (such as the `modus-themes').
+
+- A height attribute for anything other than the `default' face
+  must be set to a floating point, which is understood as a
+  multiple of the default height (this allows all faces to scale
+  harmoniously).  The `:default-height' always is a natural
+  number.
+
+- Fontaine does not [yet] support Emacs' fontsets for other
+  scripts or character sets (e.g. Emoji).  Read the documentation
+  in the Info node `(emacs) Modifying Fontsets'."
   :group 'fontaine
   :type `(alist
           :value-type
@@ -405,6 +417,9 @@ Target FRAME, if provided as an optional argument."
      ;; certain families.
      (x-family-fonts nil frame)))))
 
+;; NOTE 2022-04-29: This is known to not work on Windows, except for
+;; Emacs 29.  Read:
+;; <https://lists.gnu.org/archive/html/emacs-devel/2022-04/msg01281.html>.
 (defun fontaine--family-list-variable-pitch (&optional frame)
   "Return a list of available proportionately spaced font families.
 Target FRAME, if provided as an optional argument."
