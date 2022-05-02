@@ -69,8 +69,8 @@ modify this GNU manual.”
 
 #+vindex: fontaine-presets
 Fontaine lets the user specify presets of font configurations and set
-them on demand.  The user option ~fontaine-presets~ holds all such
-presets.
+them on demand on graphical Emacs frames.  The user option
+~fontaine-presets~ holds all such presets.
 
 Presets consist of a list of properties that govern the family, weight,
 and height of the faces ~default~, ~fixed-pitch~, ~variable-pitch~,
@@ -112,6 +112,16 @@ such as:
 (fontaine-set-preset 'regular)
 #+end_src
 
+The default behaviour of ~fontaine-set-preset~ is to change fonts across
+all graphical frames.  The user can, however, limit the changes to a
+given frame.  For interactive use, this is done by invoking the command
+with a universal prefix argument (=C-u= by default), which changes fonts
+only in the current frame.  When used in Lisp, the FRAME argument can be
+a frame object (satisfies ~framep~) or a non-nil value: the former
+applies the effects to the given object, while the latter means the
+current frame and thus is the same as interactively supplying the prefix
+argument.
+
 #+findex: fontaine-set-face-font
 #+vindex: fontaine-font-families
 The command ~fontaine-set-face-font~ prompts with completion for a face
@@ -131,6 +141,9 @@ previewing certain styles before eventually codifying them as presets.
 Changing the ~bold~ and ~italic~ faces only has a noticeable effect if
 the underlying theme does not hardcode a weight and slant but inherits
 from those faces instead (e.g. the ~modus-themes~).
+
+The ~fontaine-set-face-font~ also accepts an optional FRAME argument,
+which is the same as what was described above for ~fontaine-set-preset~.
 
 #+vindex: fontaine-latest-state-file
 #+findex: fontaine-store-latest-preset
