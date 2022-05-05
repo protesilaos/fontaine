@@ -254,13 +254,9 @@ Remember to read the relevant doc strings.
          :italic-slant italic
          :line-spacing 1)))
 
-(fontaine-restore-latest-preset)
-
-;; Use `fontaine-recovered-preset' if available, else fall back to the
-;; desired style from `fontaine-presets'.
-(if-let ((state fontaine-recovered-preset))
-    (fontaine-set-preset state)
-  (fontaine-set-preset 'regular))
+;; Recover last preset or fall back to desired style from
+;; `fontaine-presets'.
+(fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
 
 ;; The other side of `fontaine-restore-latest-preset'.
 (add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
@@ -283,7 +279,7 @@ Fontaine is meant to be a collective effort.  Every bit of help matters.
 
 + Author/maintainer :: Protesilaos Stavrou.
 
-+ Contributions to the code or manual :: Eli Zaretskii.
++ Contributions to the code or manual :: Christopher League, Eli Zaretskii.
 
 * GNU Free Documentation License
 :PROPERTIES:
