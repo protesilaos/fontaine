@@ -5,9 +5,9 @@
 #+options: ':t toc:nil author:t email:t num:t
 #+startup: content
 
-#+macro: stable-version 0.1.0
-#+macro: release-date 2022-04-28
-#+macro: development-version 0.2.0-dev
+#+macro: stable-version 0.2.0
+#+macro: release-date 2022-05-09
+#+macro: development-version 0.3.0-dev
 #+macro: file @@texinfo:@file{@@$1@@texinfo:}@@
 #+macro: space @@texinfo:@: @@
 #+macro: kbd @@texinfo:@kbd{@@$1@@texinfo:}@@
@@ -37,6 +37,7 @@ commit, is explicitly marked as such.
 Current development target is {{{development-version}}}.
 
 + Homepage: https://protesilaos.com/emacs/fontaine.
++ Change log: https://protesilaos.com/emacs/fontaine-changelog.
 + Git repository: https://git.sr.ht/~protesilaos/fontaine.
 + Mailing list: https://lists.sr.ht/~protesilaos/fontaine.
 
