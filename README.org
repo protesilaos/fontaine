@@ -101,6 +101,8 @@ The doc string of ~fontaine-presets~ explains all properties in detail
 and documents some important caveats or information about font settings
 in Emacs.
 
+[[#h:35bc7f51-6368-4718-ad25-b276a1f2cc08][Shared and implicit fallback values for presets]].
+
 #+findex: fontaine-set-preset
 The command ~fontaine-set-preset~ applies the desired preset.  If there
 is only one available, it implements it outright.  Otherwise it produces
@@ -164,6 +166,242 @@ As for the name of this package, it is the French word for "fountain"
 which, in turn, is what the font or source is.  However, I will not
 blame you if you can only interpret it as a descriptive acronym: FONTs
 Are Irrelevant in Non-graphical Emacs (because that is actually true).
+
+** Shared and implicit fallback values for presets
+:PROPERTIES:
+:CUSTOM_ID: h:35bc7f51-6368-4718-ad25-b276a1f2cc08
+:END:
+#+cindex: Concise fontaine-presets
+
+The user option ~fontaine-presets~ may look like this (its default
+value):
+
+#+begin_src emacs-lisp
+(setq fontaine-presets
+      '((regular
+         :default-family "Hack"
+         :default-weight normal
+         :default-height 100
+         :fixed-pitch-family "Fira Code"
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "Noto Sans"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.0
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family "Source Code Pro"
+         :italic-slant italic
+         :line-spacing 1)
+        (large
+         :default-family "Iosevka"
+         :default-weight normal
+         :default-height 150
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "FiraGO"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family nil ; use whatever the underlying face has
+         :italic-slant italic
+         :line-spacing 1)))
+#+end_src
+
+Notice that not all properties need to be specified, as they have
+reasonable fallback values.  The above can be written thus (removed
+lines are left empty for didactic purposes):
+
+#+begin_src emacs-lisp
+(setq fontaine-presets
+      '((regular
+         :default-family "Hack"
+
+         :default-height 100
+         :fixed-pitch-family "Fira Code"
+
+
+         :variable-pitch-family "Noto Sans"
+
+
+
+
+         :italic-family "Source Code Pro"
+
+         :line-spacing 1)
+        (large
+         :default-family "Iosevka"
+
+         :default-height 150
+
+
+
+         :variable-pitch-family "FiraGO"
+
+
+
+
+
+
+         :line-spacing 1)))
+#+end_src
+
+Without the empty lines, we have this, which yields the same results as
+the first example:
+
+#+begin_src emacs-lisp
+(setq fontaine-presets
+      '((regular
+         :default-family "Hack"
+         :default-height 100
+         :fixed-pitch-family "Fira Code"
+         :variable-pitch-family "Noto Sans"
+         :italic-family "Source Code Pro"
+         :line-spacing 1)
+        (large
+         :default-family "Iosevka"
+         :default-height 150
+         :variable-pitch-family "FiraGO"
+         :line-spacing 1)))
+#+end_src
+
+We call the properties of the removed lines "implicit fallback values".
+
+This already shows us that the value of ~fontaine-presets~ does not need
+to be extensive.  To further improve its conciseness, it accepts a
+special preset that provides a list of "shared fallback properties": the
+=t= preset.  This one is used to define properties that are common to
+multiple presets, such as the =regular= and =large= we have illustrated
+thus far.  Here is how verbose presets can be expressed succinctly:
+
+#+begin_src emacs-lisp
+;; Notice the duplication of properties and how we will avoid it.
+(setq fontaine-presets
+      '((regular
+         :default-family "Iosevka Comfy"
+         :default-weight normal
+         :default-height 100
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "FiraGO"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family nil
+         :italic-slant italic
+         :line-spacing nil)
+        (medium
+         :default-family "Iosevka Comfy"
+         :default-weight semilight
+         :default-height 140
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "FiraGO"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family nil
+         :italic-slant italic
+         :line-spacing nil)
+        (large
+         :default-family "Iosevka Comfy"
+         :default-weight semilight
+         :default-height 180
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "FiraGO"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight extrabold
+         :italic-family nil
+         :italic-slant italic
+         :line-spacing nil)))
+
+(setq fontaine-presets
+      '((regular
+         :default-height 100)
+        (medium
+         :default-weight semilight
+         :default-height 140)
+        (large
+         :default-weight semilight
+         :default-height 180
+         :bold-weight extrabold)
+        (t ; our shared fallback properties
+         :default-family "Iosevka Comfy"
+         :default-weight normal
+         ;; :default-height 100
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "FiraGO"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family nil
+         :italic-slant italic
+         :line-spacing nil)))
+#+end_src
+
+The =t= preset does not need to explicitly cover all properties.  It can
+rely on the aforementioned "implicit fallback values" to further reduce
+its verbosity (though the user can always write all properties if they
+intend to change their values).  We then have this transformation:
+
+#+begin_src emacs-lisp
+;; The verbose form
+(setq fontaine-presets
+      '((regular
+         :default-height 100)
+        (medium
+         :default-weight semilight
+         :default-height 140)
+        (large
+         :default-weight semilight
+         :default-height 180
+         :bold-weight extrabold)
+        (t ; our shared fallback properties
+         :default-family "Iosevka Comfy"
+         :default-weight normal
+         ;; :default-height 100
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "FiraGO"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family nil
+         :italic-slant italic
+         :line-spacing nil)))
+
+;; The concise one which relies on "implicit fallback values"
+(setq fontaine-presets
+      '((regular
+         :default-height 100)
+        (medium
+         :default-weight semilight
+         :default-height 140)
+        (large
+         :default-weight semilight
+         :default-height 180
+         :bold-weight extrabold)
+        (t ; our shared fallback properties
+         :default-family "Iosevka Comfy"
+         :default-weight normal
+         :variable-pitch-family "FiraGO"
+         :variable-pitch-height 1.05)))
+#+end_src
 
 * Installation
 :PROPERTIES:
@@ -285,6 +523,8 @@ Fontaine is meant to be a collective effort.  Every bit of help matters.
 + Author/maintainer :: Protesilaos Stavrou.
 
 + Contributions to the code or manual :: Christopher League, Eli Zaretskii.
+
++ Ideas and user feedback :: Ted Reed.
 
 * GNU Free Documentation License
 :PROPERTIES:
