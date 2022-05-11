@@ -114,6 +114,8 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'subr-x))
+
 (defgroup fontaine ()
   "Set font configurations using presets."
   :group 'font)
