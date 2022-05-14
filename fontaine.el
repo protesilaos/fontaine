@@ -554,7 +554,7 @@ Target FRAME, if provided as an optional argument."
                        (append (alist-get 'fixed-pitch fontaine-font-families)
                                (alist-get 'variable-pitch fontaine-font-families))
                        (font-family-list)))
-         (family (completing-read "Font family of `default' face: "
+         (family (completing-read "Font family of `default': "
                                   families nil t
                                   nil 'fontaine--default-font-family-history))
          (weight (intern (completing-read "Select weight for `default': "
