@@ -5,7 +5,7 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; URL: https://git.sr.ht/~protesilaos/fontaine
 ;; Mailing list: https://lists.sr.ht/~protesilaos/fontaine
-;; Version: 0.2.2
+;; Version: 0.2.3
 ;; Package-Requires: ((emacs "27.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -414,6 +414,7 @@ ARGS are its routines."
    'bold
    (or (plist-get properties :bold-family) 'unspecified)
    (or (plist-get properties :bold-weight) 'bold)
+   (or (plist-get properties :variable-pitch-height) 1.0)
    frame))
 
 (fontaine--apply-preset

@@ -528,7 +528,8 @@ Fontaine is meant to be a collective effort.  Every bit of help matters.
 
 + Author/maintainer :: Protesilaos Stavrou.
 
-+ Contributions to the code or manual :: Christopher League, Eli Zaretskii.
++ Contributions to the code or manual :: Christopher League, Eli
+  Zaretskii, Terry F. Torrey.
 
 + Ideas and user feedback :: Ted Reed.
 
