@@ -476,7 +476,7 @@ non-nil."
         (caar fontaine-presets)
       (fontaine--set-fonts-prompt))
     current-prefix-arg))
-  (if (not window-system)
+  (if (and (not (daemonp)) (not window-system))
       (user-error "Cannot use this in a terminal emulator; try the Emacs GUI")
     (fontaine--apply-default-preset preset frame)
     (fontaine--apply-fixed-pitch-preset preset frame)
