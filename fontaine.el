@@ -5,6 +5,7 @@
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Fontaine Development <~protesilaos/fontaine@lists.sr.ht>
 ;; URL: https://git.sr.ht/~protesilaos/fontaine
+;; Mailing-List: https://lists.sr.ht/~protesilaos/fontaine
 ;; Version: 0.2.3
 ;; Package-Requires: ((emacs "27.1"))
 
