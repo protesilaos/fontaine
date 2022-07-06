@@ -6,7 +6,7 @@
 ;; Maintainer: Fontaine Development <~protesilaos/fontaine@lists.sr.ht>
 ;; URL: https://git.sr.ht/~protesilaos/fontaine
 ;; Mailing-List: https://lists.sr.ht/~protesilaos/fontaine
-;; Version: 0.2.3
+;; Version: 0.3.0
 ;; Package-Requires: ((emacs "27.1"))
 
 ;; This file is NOT part of GNU Emacs.

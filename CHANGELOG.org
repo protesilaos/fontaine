@@ -9,6 +9,47 @@ project's main git repository: <https://git.sr.ht/~protesilaos/fontaine>.
 The newest release is at the top.  For further details, please consult
 the manual: <https://protesilaos.com/emacs/fontaine>.
 
+* Version 0.3.0 on 2022-07-06
+:PROPERTIES:
+:CUSTOM_ID: h:0112e468-9ead-4bfb-b93b-74c520bbec69
+:END:
+
+This is a stability release that introduces minor tweaks while
+formalising point releases which were already available to users.
+
++ Fixed a bug where a nil minibuffer history would produce an error
+  while trying to set a preset.
+
++ Required the =subr-x= library at compile time.  This is to avoid
+  scenaria where ~if-let~ and friends are not known to the byte
+  compiler.  Such a problem was reported by Ted Reed concerning their
+  Emacs 27 build:
+  <https://lists.sr.ht/~protesilaos/fontaine/%3Cm27d6t3f7a.fsf@zenithia.net%3E#%3C87ee11w1j0.fsf@zenithia.net%3E>.
+
++ Simplified the text of the minibuffer prompt for the ~default~ face.
+  The =marginalia= package treats the candidates as faces when the word
+  "face" occurs in the prompt.  Generally that should be okay, though we
+  do not want it in our case.
+
++ Documented a reference to the "devel" variant of GNU ELPA.  This is
+  for users who want to use a version of the package built from the
+  latest commit instead of the last tagged release.  Read:
+  <https://protesilaos.com/codelog/2022-05-13-emacs-elpa-devel/>.
+
++ Refrained from erroring out with ~fontaine-set-preset~ if Emacs is not
+  in a graphical window (GUI) while the =emacs --daemon= is in use.  The
+  ~user-error~ is now limited to the case where a standalone frame is
+  non-graphial and the daemon is not running (the error is that you
+  cannot change fonts inside of TUI Emacs).  Thanks to Florent Teissier
+  for the patch!
+
++ Named the mailing list address as the =Maintainer:= of Denote.
+  Together with the other package headers, they help the user find our
+  primary sources and/or communication channels.  This change conforms
+  with work being done upstream in package.el by Philip Kaludercic.  I
+  was informed about it here:
+  <https://lists.sr.ht/~protesilaos/general-issues/%3C875ykl84yi.fsf%40posteo.net%3E>.
+
 * Version 0.2.0 on 2022-05-09
 :PROPERTIES:
 :CUSTOM_ID: h:f9399542-29b7-4d26-af82-090fed802cc8
