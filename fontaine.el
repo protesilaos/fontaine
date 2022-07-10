@@ -139,45 +139,42 @@
 
 (defcustom fontaine-presets
   '((regular
-     :default-family "Hack"
-     :default-weight normal
-     :default-height 100
-     :fixed-pitch-family "Fira Code"
-     :fixed-pitch-weight nil ; falls back to :default-weight
-     :fixed-pitch-height 1.0
-     :variable-pitch-family "Noto Sans"
-     :variable-pitch-weight normal
-     :variable-pitch-height 1.0
-     :bold-family nil ; use whatever the underlying face has
-     :bold-weight bold
-     :italic-family "Source Code Pro"
-     :italic-slant italic
-     :line-spacing 1)
+     :default-height 100)
     (large
-     :default-family "Iosevka"
-     :default-weight normal
-     :default-height 150
+     :default-weight semilight
+     :default-height 140
+     :bold-weight extrabold)
+    (t
+     ;; I keep all properties for didactic purposes, but most can be
+     ;; omitted.
+     :default-family "Monospace"
+     :default-weight regular
+     :default-height 100
      :fixed-pitch-family nil ; falls back to :default-family
      :fixed-pitch-weight nil ; falls back to :default-weight
      :fixed-pitch-height 1.0
-     :variable-pitch-family "FiraGO"
-     :variable-pitch-weight normal
-     :variable-pitch-height 1.05
+     :fixed-pitch-serif-family nil ; falls back to :default-family
+     :fixed-pitch-serif-weight nil ; falls back to :default-weight
+     :fixed-pitch-serif-height 1.0
+     :variable-pitch-family "Sans"
+     :variable-pitch-weight nil
+     :variable-pitch-height 1.0
      :bold-family nil ; use whatever the underlying face has
      :bold-weight bold
-     :italic-family nil ; use whatever the underlying face has
+     :italic-family nil
      :italic-slant italic
-     :line-spacing 1))
+     :line-spacing nil))
   "Alist of desired typographic properties.
 
 The car of each cell is an arbitrary symbol that identifies
-and/or describes the set of properties (e.g. 'small', 'reading').
+and/or describes the set of properties (e.g. small, reading).
 
 A preset whose car is t is treated as the default option.  This
 makes it easier to specify multiple presets without duplicating
 their properties.  The other presets beside t act as overrides of
 the defaults and, as such, need only consist of the properties
-that change from the default.
+that change from the default.  See the default value of this
+variable for how that is done.
 
 The cdr is a plist that specifies the typographic properties of
 the faces `default', `fixed-pitch', `variable-pitch', `bold', and
