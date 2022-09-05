@@ -546,6 +546,48 @@ Remember to read the relevant doc strings.
 (define-key global-map (kbd "C-c F") #'fontaine-set-face-font)
 #+end_src
 
+** Persist font configurations on theme switch
+:PROPERTIES:
+:CUSTOM_ID: h:f1b48050-e8e1-4689-b92f-7776bbaa55a4
+:END:
+
+Themes re-apply face definitions when they are loaded.  This is
+necessary to render the theme.  For certain faces, such as ~bold~ and
+~italic~, this means that their font family is reset.  To avoid this
+problem, we can instruct them to restore the current font configuration
+with something like this:
+
+#+begin_src emacs-lisp
+;; Persist font configurations while switching themes (doing it with
+;; my `modus-themes' and `ef-themes' via the hooks they provide).
+(dolist (hook '(modus-themes-after-load-theme-hook ef-themes-post-load-hook))
+  (add-hook hook (lambda () (fontaine-set-preset fontaine-current-preset))))
+#+end_src
+
+[ The variable ~fontaine-current-preset~ is part of {{{development-version}}} ]
+
+Themes must specify a hook that is called by their relevant commands at
+the post-theme-load phase.  This can also be done in a theme-agnostic
+way:
+
+#+begin_src emacs-lisp
+;; Set up the `after-enable-theme-hook'
+(defvar after-enable-theme-hook nil
+   "Normal hook run after enabling a theme.")
+
+(defun run-after-enable-theme-hook (&rest _args)
+   "Run `after-enable-theme-hook'."
+   (run-hooks 'after-enable-theme-hook))
+
+(advice-add 'enable-theme :after #'run-after-enable-theme-hook)
+#+end_src
+
+And then simply use that hook:
+
+#+begin_src emacs-lisp
+(add-hook 'after-enable-theme-hook (lambda () (fontaine-set-preset fontaine-current-preset)))
+#+end_src
+
 * Acknowledgements
 :PROPERTIES:
 :CUSTOM_ID: h:3cf30d7d-e0a0-4835-8f25-570bab6cc3ed
