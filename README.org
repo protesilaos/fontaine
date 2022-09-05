@@ -573,11 +573,11 @@ way:
 #+begin_src emacs-lisp
 ;; Set up the `after-enable-theme-hook'
 (defvar after-enable-theme-hook nil
-   "Normal hook run after enabling a theme.")
+  "Normal hook run after enabling a theme.")
 
 (defun run-after-enable-theme-hook (&rest _args)
-   "Run `after-enable-theme-hook'."
-   (run-hooks 'after-enable-theme-hook))
+  "Run `after-enable-theme-hook'."
+  (run-hooks 'after-enable-theme-hook))
 
 (advice-add 'enable-theme :after #'run-after-enable-theme-hook)
 #+end_src
