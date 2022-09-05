@@ -469,8 +469,9 @@ ARGS are its routines."
 (defvar fontaine-set-preset-hook nil
   "Hook that runs after setting fonts.")
 
-(defvar fontaine--current-preset nil
-  "Current font set in `fontaine-presets'.")
+(defvar fontaine-current-preset nil
+  "Current font set in `fontaine-presets'.
+This is the preset last used by `fontaine-set-preset'.")
 
 ;;;###autoload
 (defun fontaine-set-preset (preset &optional frame)
@@ -501,7 +502,7 @@ non-nil."
     (fontaine--apply-variable-pitch-preset preset frame)
     (fontaine--apply-bold-preset preset frame)
     (fontaine--apply-italic-preset preset frame)
-    (setq fontaine--current-preset preset)
+    (setq fontaine-current-preset preset)
     (add-to-history 'fontaine--preset-history (format "%s" preset))
     (run-hooks 'fontaine-set-preset-hook)))
 
