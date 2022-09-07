@@ -4,9 +4,9 @@
 #+language:              en
 #+options:               ':t toc:nil author:t email:t num:t
 #+startup:               content
-#+macro:                 stable-version 0.3.0
-#+macro:                 release-date 2022-07-06
-#+macro:                 development-version 0.4.0-dev
+#+macro:                 stable-version 0.4.0
+#+macro:                 release-date 2022-09-07
+#+macro:                 development-version 0.5.0-dev
 #+export_file_name:      fontaine.texi
 #+texinfo_filename:      fontaine.info
 #+texinfo_dir_category:  Emacs misc features
@@ -70,8 +70,6 @@ modify this GNU manual.”
 Fontaine lets the user specify presets of font configurations and set
 them on demand on graphical Emacs frames.  The user option
 ~fontaine-presets~ holds all such presets.
-
-[ Support for ~fixed-pitch-serif~ is part of {{{development-version}}} ]
 
 Presets consist of a list of properties that govern the family, weight,
 and height of the faces ~default~, ~fixed-pitch~, ~fixed-pitch-serif~,
@@ -550,8 +548,6 @@ Remember to read the relevant doc strings.
 :PROPERTIES:
 :CUSTOM_ID: h:f1b48050-e8e1-4689-b92f-7776bbaa55a4
 :END:
-
-[ The command ~fontaine-apply-current-preset~ is part of {{{development-version}}} ]
 
 #+findex: fontaine-apply-current-preset
 #+vindex: fontaine-current-preset

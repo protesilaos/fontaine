@@ -9,6 +9,153 @@ project's main git repository: <https://git.sr.ht/~protesilaos/fontaine>.
 The newest release is at the top.  For further details, please consult
 the manual: <https://protesilaos.com/emacs/fontaine>.
 
+* Version 0.4.0 on 2022-09-07
+:PROPERTIES:
+:CUSTOM_ID: h:757a185d-d367-4712-8313-ad17265e597f
+:END:
+
++ Made it possible for the user option ~fontaine-presets~ to cover the
+  ~fixed-pitch-serif~ face.  This face is used by the default Emacs
+  faces in Info buffers to render inline code elements.  A list of
+  properties within ~fontaine-presets~ can thus look like this (the
+  manual explains everything in detail---else check my current setup at
+  the end of this entry):
+
+  #+begin_src emacs-lisp
+  (regular
+   ;; I keep all properties for didactic purposes, but most can be
+   ;; omitted.
+   :default-family "Monospace"
+   :default-weight regular
+   :default-height 100
+   :fixed-pitch-family nil ; falls back to :default-family
+   :fixed-pitch-weight nil ; falls back to :default-weight
+   :fixed-pitch-height 1.0
+   :fixed-pitch-serif-family nil ; falls back to :default-family
+   :fixed-pitch-serif-weight nil ; falls back to :default-weight
+   :fixed-pitch-serif-height 1.0
+   :variable-pitch-family "Sans"
+   :variable-pitch-weight nil
+   :variable-pitch-height 1.0
+   :bold-family nil ; use whatever the underlying face has
+   :bold-weight bold
+   :italic-family nil
+   :italic-slant italic
+   :line-spacing nil)
+  #+end_src
+
+  When the relevant attributes of ~fixed-pitch-serif~ are not specified,
+  they fall back to the values of the ~default~ face.
+
+  Note that ~fixed-pitch-serif~ is not used by my =modus-themes= and
+  =ef-themes= because I think it looks awful out-of-the-box (a bitmap
+  font on the GNU/Linux distros I used).  One can still modify any face
+  to inherit from ~fixed-pitch-serif~, if they want to.
+
++ Introduced the command ~fontaine-apply-current-preset~ and wrote a
+  relevant entry in the manual on how to "Persist font configurations on
+  theme switch".  Relevant quote from the manual:
+
+  #+begin_quote
+  Themes re-apply face definitions when they are loaded.  This is
+  necessary to render the theme.  For certain faces, such as ~bold~ and
+  ~italic~, it means that their font family may be reset (depending on the
+  particularities of the theme).
+
+  To avoid such a problem, we can arrange to restore the current font
+  preset which was applied by ~fontaine-set-preset~.  Fontaine provides
+  the command ~fontaine-apply-current-preset~.  It can either be called
+  interactively after loading a theme or be assigned to a hook that is ran
+  at the post ~load-theme~ phase.
+
+  Some themes that provide a hook are the =modus-themes= and =ef-themes=
+  (both by Protesilaos), so we can use something like: [...]
+  #+end_quote
+
++ The once private variable ~fontaine--current-preset~ is now made
+  public by means of a rename to ~fontaine-current-preset~.  In
+  practical terms, this tells advanced users that they can rely on the
+  presence of this variable and/or on the fact that changes to it will
+  be documented accordingly.
+
+My current configuration as of 2022-09-07 17:56 +0300, which might give
+you some ideas:
+
+#+begin_src emacs-lisp
+(require 'fontaine)
+
+;; Iosevka Comfy is my highly customised build of Iosevka with
+;; monospaced and duospaced (quasi-proportional) variants as well as
+;; support or no support for ligatures:
+;; <https://git.sr.ht/~protesilaos/iosevka-comfy>.
+;;
+;; Iosevka Comfy            == monospaced, supports ligatures
+;; Iosevka Comfy Fixed      == monospaced, no ligatures
+;; Iosevka Comfy Duo        == quasi-proportional, supports ligatures
+;; Iosevka Comfy Wide       == like Iosevka Comfy, but wider
+;; Iosevka Comfy Wide Fixed == like Iosevka Comfy Fixed, but wider
+;; Iosevka Comfy Motion     == monospaced, supports ligatures, fancier glyphs
+;; Iosevka Comfy Motion Duo == as above, but quasi-proportional
+(setq fontaine-presets
+      '((tiny
+         :default-family "Iosevka Comfy Wide Fixed"
+         :default-height 70)
+        (small
+         :default-family "Iosevka Comfy Fixed"
+         :default-height 90)
+        (regular
+         :default-height 100)
+        (medium
+         :default-height 110)
+        (large
+         :default-weight semilight
+         :default-height 140
+         :bold-weight extrabold)
+        (code-demo
+         :default-weight semilight
+         :default-height 170
+         :bold-weight extrabold)
+        (presentation
+         :default-weight semilight
+         :default-height 220
+         :bold-weight extrabold)
+        (t
+         ;; I keep all properties for didactic purposes, but most can be
+         ;; omitted.  See the fontaine manual for the technicalities:
+         ;; <https://protesilaos.com/emacs/fontaine>.
+         :default-family "Iosevka Comfy"
+         :default-weight regular
+         :default-height 100
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :fixed-pitch-serif-family nil ; falls back to :default-family
+         :fixed-pitch-serif-weight nil ; falls back to :default-weight
+         :fixed-pitch-serif-height 1.0
+         :variable-pitch-family "Iosevka Comfy Motion Duo"
+         :variable-pitch-weight nil
+         :variable-pitch-height 1.0
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family "Iosevka Comfy Motion"
+         :italic-slant italic
+         :line-spacing nil)))
+
+;; Set last preset or fall back to desired style from `fontaine-presets'.
+(fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
+
+;; The other side of `fontaine-restore-latest-preset'.
+(add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+
+;; Persist font configurations while switching themes (doing it with
+;; my `modus-themes' and `ef-themes' via the hooks they provide).
+(dolist (hook '(modus-themes-after-load-theme-hook ef-themes-post-load-hook))
+  (add-hook hook #'fontaine-apply-current-preset))
+
+(define-key global-map (kbd "C-c f") #'fontaine-set-preset)
+(define-key global-map (kbd "C-c F") #'fontaine-set-face-font)
+#+end_src
+
 * Version 0.3.0 on 2022-07-06
 :PROPERTIES:
 :CUSTOM_ID: h:0112e468-9ead-4bfb-b93b-74c520bbec69
