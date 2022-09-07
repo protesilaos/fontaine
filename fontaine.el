@@ -575,9 +575,6 @@ Target FRAME, if provided as an optional argument."
     (seq-filter
      (lambda (fam)
        (aref fam 5))
-     ;; FIXME 2022-04-26: Is `x-family-fonts' the right call here, or
-     ;; will it not work in some Emacs builds?
-     ;;
      ;; NOTE 2022-04-26: `x-family-fonts' and `x-list-fonts' accept a
      ;; pattern, but I cannot find how to use it properly to filter out
      ;; certain families.
