@@ -250,7 +250,6 @@ Caveats or further notes:
 - Fontaine does not [yet] support Emacs' fontsets for other
   scripts or character sets (e.g. Emoji).  Read the documentation
   in the Info node `(emacs) Modifying Fontsets'."
-  :group 'fontaine
   :type `(alist
           :value-type
           (plist :options
@@ -284,6 +283,8 @@ Caveats or further notes:
 
                   ((const :tag "Line spacing" :line-spacing) ,(get 'line-spacing 'custom-type))))
           :key-type symbol)
+  :package-version '(fontaine . "0.4.0")
+  :group 'fontaine
   :link '(info-link "(fontaine) Shared and implicit fallback values for presets"))
 
 (defcustom fontaine-latest-state-file
@@ -295,6 +296,7 @@ which should be assigned to a hook (e.g. `kill-emacs-hook').
 This is then used to restore the last value with the function
 `fontaine-restore-latest-preset'."
   :type 'file
+  :package-version '(fontaine . "0.1.0")
   :group 'fontaine)
 
 (defcustom fontaine-font-families nil
@@ -331,6 +333,7 @@ combine the other two lists."
           (cons :tag "Variable pitch font families"
                 (const variable-pitch)
                 (repeat string)))
+  :package-version '(fontaine . "0.2.0")
   :group 'fontaine)
 
 ;;;; General utilities
