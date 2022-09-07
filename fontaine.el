@@ -471,7 +471,8 @@ ARGS are its routines."
 
 (defvar fontaine-current-preset nil
   "Current font set in `fontaine-presets'.
-This is the preset last used by `fontaine-set-preset'.")
+This is the preset last used by `fontaine-set-preset'.  Also see
+the command `fontaine-apply-current-preset'.")
 
 ;;;###autoload
 (defun fontaine-set-preset (preset &optional frame)
@@ -487,7 +488,10 @@ frame and apply the effects to it.
 
 When called interactively with a universal prefix
 argument (\\[universal-argument]), FRAME is interpreted as
-non-nil."
+non-nil.
+
+Set `fontaine-current-preset' to PRESET.  Also see the command
+`fontaine-apply-current-preset'."
   (interactive
    (list
     (if (= (length fontaine-presets) 1)
@@ -505,6 +509,28 @@ non-nil."
     (setq fontaine-current-preset preset)
     (add-to-history 'fontaine--preset-history (format "%s" preset))
     (run-hooks 'fontaine-set-preset-hook)))
+
+;;;###autoload
+(defun fontaine-apply-current-preset ()
+  "Use `fontaine-set-preset' on `fontaine-current-preset'.
+The value of `fontaine-current-preset' must be one of the keys in
+`fontaine-presets'.
+
+Re-applying the current preset is useful when a new theme is
+loaded which overrides certain font families.  For example, if
+the theme defines the `bold' face without a `:family', loading
+that theme will make `bold' use the `default' family, even if the
+`fontaine-presets' are configured to have different families
+between the two.  In such a case, applying the current preset at
+the post `load-theme' phase (e.g. via a hook) ensures that font
+configurations remain consistent.
+
+Some themes that provide hooks of this sort are the
+`modus-themes' and `ef-themes' (both by Protesilaos)."
+  (interactive)
+  (when-let* ((current fontaine-current-preset)
+              ((alist-get current fontaine-presets)))
+    (fontaine-set-preset current)))
 
 ;;;; Modify individual faces
 
