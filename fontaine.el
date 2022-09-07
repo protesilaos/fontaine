@@ -557,10 +557,6 @@ Some themes that provide hooks of this sort are the
 (defvar fontaine--face-history '()
   "Minibuffer history of `fontaine-set-face-font'.")
 
-(define-obsolete-variable-alias
-  'fontaine--font-family-history
-  'fontaine--default-font-family-history "2022-04-29")
-
 (defvar fontaine--default-font-family-history '()
   "Minibuffer history of selected `default' font families.")
 
