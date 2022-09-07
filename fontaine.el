@@ -380,6 +380,10 @@ ARGS are its routines."
      (if-let ((properties (append (alist-get preset fontaine-presets)
                                   (alist-get t fontaine-presets))))
          ,args
+       ;; FIXME 2022-09-07: Because we `append' the t of
+       ;; `fontaine-presets' this error is only relevant when the list
+       ;; is empty.  Perhaps we can harden the condition.  Otherwise we
+       ;; should reword this.
        (user-error "%s is not in `fontaine-presets' or is empty" preset))))
 
 (fontaine--apply-preset
