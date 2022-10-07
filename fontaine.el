@@ -438,7 +438,6 @@ ARGS are its routines."
   'bold
   (or (plist-get properties :bold-family) 'unspecified)
   (or (plist-get properties :bold-weight) 'bold)
-  (or (plist-get properties :variable-pitch-height) 1.0)
   frame))
 
 (fontaine--apply-preset
