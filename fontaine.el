@@ -1,6 +1,6 @@
 ;;; fontaine.el --- Set font configurations using presets -*- lexical-binding: t -*-
 
-;; Copyright (C) 2022  Free Software Foundation, Inc.
+;; Copyright (C) 2022-2023  Free Software Foundation, Inc.
 
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
 ;; Maintainer: Fontaine Development <~protesilaos/fontaine@lists.sr.ht>
