@@ -122,19 +122,19 @@
   :group 'font)
 
 (defconst fontaine--weights-widget
-  '(choice
-    (const :tag "Normal" normal)
-    (const :tag "Regular (same as normal)" regular)
-    (const :tag "Thin" thin)
-    (const :tag "Ultra-light" ultralight)
-    (const :tag "Extra-light" extralight)
-    (const :tag "Light" light)
-    (const :tag "Semi-light" semilight)
-    (const :tag "Medium" medium)
-    (const :tag "Semi-bold" semibold)
-    (const :tag "Bold" bold)
-    (const :tag "Extra-bold" extrabold)
-    (const :tag "Ultra-bold" ultrabold))
+  '(choice :tag "Font weight (must be supported by the typeface)"
+           (const :tag "Normal" normal)
+           (const :tag "Regular (same as normal)" regular)
+           (const :tag "Thin" thin)
+           (const :tag "Ultra-light" ultralight)
+           (const :tag "Extra-light" extralight)
+           (const :tag "Light" light)
+           (const :tag "Semi-light" semilight)
+           (const :tag "Medium" medium)
+           (const :tag "Semi-bold" semibold)
+           (const :tag "Bold" bold)
+           (const :tag "Extra-bold" extrabold)
+           (const :tag "Ultra-bold" ultrabold))
   "Widget with font weights for `fontaine-presets'.")
 
 (defcustom fontaine-presets
