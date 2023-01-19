@@ -108,10 +108,11 @@
 ;; not stored in their `.emacs.d', but in a standard directory instead:
 ;; <https://github.com/emacscollective/no-littering>.
 ;;
-;; As for the name of this package, it is the French word for "fountain"
-;; which, in turn, is what the font or source is.  However, I will not
-;; blame you if you can only interpret it as a descriptive acronym: FONTs
-;; Are Irrelevant in Non-graphical Emacs (because that is actually true).
+;; As for the name of this package, it is the French word for
+;; "fountain" which, in turn, is what the font or source is.  However,
+;; I will not blame you if you can only interpret it as a descriptive
+;; backronym: Fonts, Ornaments, and Neat Typography Are Irrelevant in
+;; Non-graphical Emacs.
 
 ;;; Code:
 
