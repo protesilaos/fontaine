@@ -407,6 +407,57 @@ intend to change their values).  We then have this transformation:
          :variable-pitch-height 1.05)))
 #+end_src
 
+** Inherit the properties of another named preset
+:PROPERTIES:
+:CUSTOM_ID: h:9604c817-9b01-46d6-9455-58b8c393e441
+:END:
+
+[ Part of {{{development-version}}}. ]
+
+When defining multiple presets, we may need to duplicate properties
+and then make tweaks to individual values.  Suppose we want to have
+two distinct presets for presentations: one is for coding related
+demonstrations and the other for prose.  Both must have some common
+styles, but must define distinct font families each of which is
+suitable for the given task.  In this case, we do not want to fall
+back to the generic =t= preset and we also do not wish to duplicate
+properties manually, potentially making mistakes in the process.
+Fontaine thus provides a method of inheriting a named preset's
+properties.  Here is the idea:
+
+#+begin_src emacs-lisp
+(setq fontaine-presets
+      '((regular
+         :default-height 100)
+        (code-demo
+         :default-family "Source Code Pro"
+         :default-weight semilight
+         :default-height 170
+         :variable-pitch-family "Sans"
+         :bold-weight extrabold)
+        (prose-demo
+         :inherit code-demo ; copy the `code-demo' properties
+         :default-family "Sans"
+         :variable-pitch-family "Serif"
+         :default-height 220)
+        (t
+         :default-family "Monospace"
+         ;; more generic fallback properties here...
+         )))
+#+end_src
+
+In this scenario, the =regular= preset gets all its properties from
+the =t= preset.  We omit them here in the interest of brevity (see the
+default value of ~fontaine-presets~ and its documentation for the
+details).  In turn, the =code-demo= specifies more properites and
+falls back to =t= for any property not explicitly referenced.
+Finally, the =prose-demo= copies everything in =code-demo=, overrides
+any property therein, and falls back to =t= for every other property.
+
+In the interest of simplicity, Fontaine does not support recursive
+inheritance.  If there is a compelling need for it, we can add it in
+future versions.
+
 * Installation
 :PROPERTIES:
 :CUSTOM_ID: h:031b9bea-d42b-4be0-82c7-42712cde94cc

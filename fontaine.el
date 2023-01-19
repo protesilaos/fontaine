@@ -225,6 +225,18 @@ The properties in detail:
 - The `:line-spacing' specifies the value of the `line-spacing'
   variable.
 
+- The `:inherit' contains the name of another named preset.  This
+  tells the relevant Fontaine functions to get the properties of
+  that preset and blend them with those of the current one.  The
+  properties of the current preset take precedence over those of
+  the inherited one, thus overriding them.  In practice, this is
+  a way to have something like an extra-large preset copy the
+  large preset and then only modify its individual properties.
+  Remember that all named presets fall back to the preset whose
+  name is t: the `:inherit' is not a substitute for that generic
+  fallback but rather an extra method of specifying font
+  configuration presets.
+
 Use the desired preset with the command `fontaine-set-preset'.
 
 For detailed configuration: Info node `(fontaine) Shared and
@@ -281,11 +293,24 @@ Caveats or further notes:
                     (const reverse-italic)
                     (const reverse-oblique)))
 
-                  ((const :tag "Line spacing" :line-spacing) ,(get 'line-spacing 'custom-type))))
+                  ((const :tag "Line spacing" :line-spacing) ,(get 'line-spacing 'custom-type))
+                  ;; FIXME 2023-01-19: Adding the (choice
+                  ;; ,@(fontaine--inheritable-presets-widget)) instead
+                  ;; of `symbol' does not have the desired effect
+                  ;; because it does not re-read `fontaine-presets'.
+                  ((const :tag "Inherit another preset" :inherit) symbol)))
           :key-type symbol)
-  :package-version '(fontaine . "0.4.0")
+  :package-version '(fontaine . "0.5.0")
   :group 'fontaine
   :link '(info-link "(fontaine) Shared and implicit fallback values for presets"))
+
+;; ;; See FIXME above in `fontaine-presets' :type.
+;; ;;
+;; (defun fontaine--inheritable-presets-widget ()
+;;   "Return widget with choice among named presets."
+;;   (mapcar (lambda (s)
+;;             (list 'const s))
+;;           (delq t (mapcar #'car fontaine-presets))))
 
 (defcustom fontaine-latest-state-file
   (locate-user-emacs-file "fontaine-latest-state.eld")
@@ -374,14 +399,32 @@ combine the other two lists."
 
 ;;;; Apply preset configurations
 
+(defun fontaine--preset-p (preset)
+  "Return non-nil if PRESET is one of the named `fontaine-presets'."
+  (let ((presets (delq t (mapcar #'car fontaine-presets))))
+    (memq preset presets)))
+
+(defun fontaine--get-inherit-name (preset)
+  "Get the `:inherit' value of PRESET."
+  (when-let* ((inherit (plist-get (alist-get preset fontaine-presets) :inherit))
+              (fontaine--preset-p inherit))
+    inherit))
+
+(defun fontaine--get-preset-properties (preset)
+  "Return list of properties for PRESET in `fontaine-presets'."
+  (let ((presets fontaine-presets))
+    (append (alist-get preset presets)
+            (when-let ((inherit (fontaine--get-inherit-name preset)))
+              (alist-get inherit presets))
+            (alist-get t presets))))
+
 (defmacro fontaine--apply-preset (fn doc args)
   "Produce function to apply preset.
 FN is the symbol of the function, DOC is its documentation, and
 ARGS are its routines."
   `(defun ,fn (preset &optional frame)
      ,doc
-     (if-let ((properties (append (alist-get preset fontaine-presets)
-                                  (alist-get t fontaine-presets))))
+     (if-let ((properties (fontaine--get-preset-properties preset)))
          ,args
        ;; FIXME 2022-09-07: Because we `append' the t of
        ;; `fontaine-presets' this error is only relevant when the list
