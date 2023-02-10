@@ -482,6 +482,7 @@ ARGS are its routines."
   'bold
   (or (plist-get properties :bold-family) 'unspecified)
   (or (plist-get properties :bold-weight) 'bold)
+  'unspecified
   frame))
 
 (fontaine--apply-preset
@@ -702,7 +703,7 @@ face."
   "Set `bold' attributes, optionally for FRAME."
   (let ((weight (intern (completing-read "Select weight for `bold': "
                                          fontaine--font-weights nil t))))
-    (fontaine--set-face-attributes 'bold 'unspecified weight frame)))
+    (fontaine--set-face-attributes 'bold 'unspecified weight 'unspecified frame)))
 
 (defun fontaine--set-italic (&optional frame)
   "Set `italic' attributes, optionally for FRAME."
