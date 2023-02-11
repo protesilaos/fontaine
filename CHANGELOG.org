@@ -9,6 +9,88 @@ project's main git repository: <https://git.sr.ht/~protesilaos/fontaine>.
 The newest release is at the top.  For further details, please consult
 the manual: <https://protesilaos.com/emacs/fontaine>.
 
+* Version 1.0.0 on 2023-02-11
+:PROPERTIES:
+:CUSTOM_ID: h:bb9803bd-6491-4b58-a685-822b0247fffc
+:END:
+
+Fontaine has been in a stable state for several months now.  I am thus
+increasing the major version number to reflect this fact.  Otherwise,
+this is a small release with only one sizeable addition.
+
+** Inherit the properties of another named preset
+:PROPERTIES:
+:CUSTOM_ID: h:f842797f-5b46-40e4-adc3-e98b289d85bf
+:END:
+
+Preset font configuration can now optionally inherit (and thus extend)
+the properties of another named preset.
+
+When defining multiple presets, we may need to duplicate properties
+and then make tweaks to individual values.  Suppose we want to have
+two distinct presets for presentations: one is for coding related
+demonstrations and the other for prose.  Both must have some common
+styles, but must define distinct font families each of which is
+suitable for the given task.  In this case, we do not want to fall
+back to the generic =t= preset (per the default behaviour) and we also
+do not wish to duplicate properties manually, potentially making
+mistakes in the process.  Fontaine thus provides a method of
+inheriting a named preset's properties by using the =:inherit=
+property with a value that references the name of another preset
+(technically, the ~car~ of that list).  Here is the idea:
+
+#+begin_src emacs-lisp
+(setq fontaine-presets
+      '((regular
+         :default-height 100)
+        (code-demo
+         :default-family "Source Code Pro"
+         :default-weight semilight
+         :default-height 170
+         :variable-pitch-family "Sans"
+         :bold-weight extrabold)
+        (prose-demo
+         :inherit code-demo ; copy the `code-demo' properties
+         :default-family "Sans"
+         :variable-pitch-family "Serif"
+         :default-height 220)
+        (t
+         :default-family "Monospace"
+         ;; more generic fallback properties here...
+         )))
+#+end_src
+
+In this scenario, the =regular= preset gets all its properties from
+the =t= preset.  We omit them here in the interest of brevity (see the
+default value of ~fontaine-presets~ and its documentation for the
+details).  In turn, the =code-demo= specifies more properties and
+falls back to =t= for any property not explicitly referenced therein.
+Finally, the =prose-demo= copies everything in =code-demo=, overrides
+every property it specifies, and falls back to =t= for every other
+property.
+
+In the interest of simplicity, Fontaine does not support recursive
+inheritance.  If there is a compelling need for it, we can add it in
+future versions.
+
+** Bug fixes
+:PROPERTIES:
+:CUSTOM_ID: h:d44c3958-e7d2-4190-93cf-92d983eb8e02
+:END:
+
+- Fixed a faulty setup for the ~:height~ attribute of the ~bold~ face.
+  Using the commands ~fontaine-set-preset~ or ~fontaine-set-face-font~
+  with a prefix argument (=C-u= with default key bindings) does not
+  produce an error anymore.  The prefix argument limits the operation
+  to the current frame.
+
+- Updated the =Commentary= section of =fontaine.el= to use the
+  FONTAINE backronym I have had on my website for a long time.
+  Namely, I changed =FONTs Are Irrelevant in Non-graphical Emacs=,
+  which was cheating on a few letters, to =Fonts, Ornaments, and Neat
+  Typography Are Irrelevant in Non-graphical Emacs=.  What do you mean
+  this is not a bug fix? 🙃
+
 * Version 0.4.0 on 2022-09-07
 :PROPERTIES:
 :CUSTOM_ID: h:757a185d-d367-4712-8313-ad17265e597f
