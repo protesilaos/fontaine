@@ -179,6 +179,8 @@ Are Irrelevant in Non-graphical Emacs (because that is actually true).
 :END:
 #+cindex: Concise fontaine-presets
 
+[[#h:9604c817-9b01-46d6-9455-58b8c393e441][Inherit the properties of another named preset]].
+
 The user option ~fontaine-presets~ may look like this (though check its
 default value before you make any edits):
 
@@ -415,6 +417,7 @@ intend to change their values).  We then have this transformation:
 :END:
 
 [ Part of {{{development-version}}}. ]
+[[#h:35bc7f51-6368-4718-ad25-b276a1f2cc08][Shared and implicit fallback values for presets]].
 
 When defining multiple presets, we may need to duplicate properties
 and then make tweaks to individual values.  Suppose we want to have
