@@ -562,7 +562,7 @@ Set `fontaine-current-preset' to PRESET.  Also see the command
     (run-hooks 'fontaine-set-preset-hook)))
 
 ;;;###autoload
-(defun fontaine-apply-current-preset ()
+(defun fontaine-apply-current-preset (&optional _theme)
   "Use `fontaine-set-preset' on `fontaine-current-preset'.
 The value of `fontaine-current-preset' must be one of the keys in
 `fontaine-presets'.
@@ -577,7 +577,10 @@ the post `load-theme' phase (e.g. via a hook) ensures that font
 configurations remain consistent.
 
 Some themes that provide hooks of this sort are the
-`modus-themes' and `ef-themes' (both by Protesilaos)."
+`modus-themes', `ef-themes', `standard-themes' (all by
+Protesilaos).  Alternatively, Emacs 29 provides the special
+`enable-theme-functions' hook, which passes the THEME argument
+for this function."
   (interactive)
   (when-let* ((current fontaine-current-preset)
               ((alist-get current fontaine-presets)))
