@@ -130,6 +130,10 @@ applies the effects to the given object, while the latter means the
 current frame and thus is the same as interactively supplying the prefix
 argument.
 
+#+vindex: fontaine-set-preset-hook
+As a final step, ~fontaine-set-preset~ calls the ~fontaine-set-preset-hook~.
+[ This is part of {{{development-version}}}. ]
+
 #+findex: fontaine-set-face-font
 #+vindex: fontaine-font-families
 The command ~fontaine-set-face-font~ prompts with completion for a face

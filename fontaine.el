@@ -362,6 +362,12 @@ combine the other two lists."
   :package-version '(fontaine . "0.2.0")
   :group 'fontaine)
 
+(defcustom fontaine-set-preset-hook nil
+  "Hook that runs after setting fonts with `fontaine-set-preset'."
+  :type 'hook
+  :package-version '(fontaine . "1.1.0")
+  :group 'fontaine)
+
 ;;;; General utilities
 
 (defun fontaine--frame (frame)
@@ -517,9 +523,6 @@ ARGS are its routines."
       (fontaine--presets-no-fallback)
       nil t nil 'fontaine--font-display-hist def))))
 
-(defvar fontaine-set-preset-hook nil
-  "Hook that runs after setting fonts.")
-
 (defvar fontaine-current-preset nil
   "Current font set in `fontaine-presets'.
 This is the preset last used by `fontaine-set-preset'.  Also see
@@ -542,7 +545,9 @@ argument (\\[universal-argument]), FRAME is interpreted as
 non-nil.
 
 Set `fontaine-current-preset' to PRESET.  Also see the command
-`fontaine-apply-current-preset'."
+`fontaine-apply-current-preset'.
+
+Call `fontaine-set-preset-hook' as a final step."
   (interactive
    (list
     (if (= (length fontaine-presets) 1)
