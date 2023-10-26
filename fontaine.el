@@ -563,7 +563,8 @@ Call `fontaine-set-preset-hook' as a final step."
     (fontaine--apply-bold-preset preset frame)
     (fontaine--apply-italic-preset preset frame)
     (setq fontaine-current-preset preset)
-    (add-to-history 'fontaine--preset-history (format "%s" preset))
+    (unless frame
+      (add-to-history 'fontaine--preset-history (format "%s" preset)))
     (run-hooks 'fontaine-set-preset-hook)))
 
 ;;;###autoload
