@@ -3,9 +3,8 @@
 ;; Copyright (C) 2022-2024  Free Software Foundation, Inc.
 
 ;; Author: Protesilaos Stavrou <info@protesilaos.com>
-;; Maintainer: Fontaine Development <~protesilaos/fontaine@lists.sr.ht>
-;; URL: https://git.sr.ht/~protesilaos/fontaine
-;; Mailing-List: https://lists.sr.ht/~protesilaos/fontaine
+;; Maintainer: Protesilaos Stavrou <info@protesilaos.com>
+;; URL: https://github.com/protesilaos/fontaine
 ;; Version: 1.0.0
 ;; Package-Requires: ((emacs "27.1"))
 
