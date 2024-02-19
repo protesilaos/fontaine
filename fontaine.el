@@ -150,15 +150,35 @@
      :default-family "Monospace"
      :default-weight regular
      :default-height 100
+
      :fixed-pitch-family nil ; falls back to :default-family
      :fixed-pitch-weight nil ; falls back to :default-weight
      :fixed-pitch-height 1.0
+
      :fixed-pitch-serif-family nil ; falls back to :default-family
      :fixed-pitch-serif-weight nil ; falls back to :default-weight
      :fixed-pitch-serif-height 1.0
+
      :variable-pitch-family "Sans"
      :variable-pitch-weight nil
      :variable-pitch-height 1.0
+
+     :mode-line-active-family nil ; falls back to :default-family
+     :mode-line-active-weight nil ; falls back to :default-weight
+     :mode-line-active-height 1.0
+
+     :mode-line-inactive-family nil ; falls back to :default-family
+     :mode-line-inactive-weight nil ; falls back to :default-weight
+     :mode-line-inactive-height 1.0
+
+     :header-line-family nil ; falls back to :default-family
+     :header-line-weight nil ; falls back to :default-weight
+     :header-line-height 1.0
+
+     :line-number-family nil ; falls back to :default-family
+     :line-number-weight nil ; falls back to :default-weight
+     :line-number-height 1.0
+
      :bold-family nil ; use whatever the underlying face has
      :bold-weight bold
      :italic-family nil
@@ -208,6 +228,26 @@ The properties in detail:
   `:variable-pitch-height' apply to the `variable-pitch' face.
   They all fall back to the respective default values, as
   described above.
+
+- The `:mode-line-active-family', `:mode-line-active-weight', and
+  `:mode-line-active-height' apply to the `mode-line' and
+  `mode-line-active' faces.  They all fall back to the respective
+  default values, as described above.
+
+- The `:mode-line-inactive-family', `:mode-line-inactive-weight',
+  and `:mode-line-inactive-height' apply to the
+  `mode-line-inactive' face.  They all fall back to the
+  respective default values, as described above.
+
+- The `:header-line-family', `:header-line-weight', and
+  `:header-line-height' apply to the `header-line' face.  They
+  all fall back to the respective default values, as described
+  above.
+
+- The `:line-number-family', `:line-number-weight', and
+  `:line-number-height' apply to the `line-number' face.  They
+  all fall back to the respective default values, as described
+  above.
 
 - The `:bold-family' and `:italic-family' are the font families
   of the `bold' and `italic' faces, respectively.  Only set them
@@ -281,6 +321,22 @@ Caveats or further notes:
                   ((const :tag "Variable pitch regular weight" :variable-pitch-weight) ,fontaine--weights-widget)
                   ((const :tag "Variable pitch height" :variable-pitch-height) float)
 
+                  ((const :tag "Active mode line font family" :mode-line-active-family) string)
+                  ((const :tag "Active mode line regular weight" :mode-line-active-weight) ,fontaine--weights-widget)
+                  ((const :tag "Active mode line height" :mode-line-active-height) float)
+
+                  ((const :tag "Inactive mode line font family" :mode-line-inactive-family) string)
+                  ((const :tag "Inactive mode line regular weight" :mode-line-inactive-weight) ,fontaine--weights-widget)
+                  ((const :tag "Inactive mode line height" :mode-line-inactive-height) float)
+
+                  ((const :tag "Header line font family" :header-line-family) string)
+                  ((const :tag "Header line regular weight" :header-line-weight) ,fontaine--weights-widget)
+                  ((const :tag "Header line height" :header-line-height) float)
+
+                  ((const :tag "Line number font family" :line-number-family) string)
+                  ((const :tag "Line number regular weight" :line-number-weight) ,fontaine--weights-widget)
+                  ((const :tag "Line number height" :line-number-height) float)
+
                   ((const :tag "Font family of the `bold' face" :bold-family) string)
                   ((const :tag "Weight for the `bold' face" :bold-weight) ,fontaine--weights-widget)
 
@@ -300,7 +356,7 @@ Caveats or further notes:
                   ;; because it does not re-read `fontaine-presets'.
                   ((const :tag "Inherit another preset" :inherit) symbol)))
           :key-type symbol)
-  :package-version '(fontaine . "0.5.0")
+  :package-version '(fontaine . "1.1.0")
   :group 'fontaine
   :link '(info-link "(fontaine) Shared and implicit fallback values for presets"))
 
@@ -481,6 +537,56 @@ ARGS are its routines."
   frame))
 
 (fontaine--apply-preset
+ fontaine--apply-mode-line-preset
+ "Set `mode-line' face attributes based on PRESET for optional FRAME."
+ (fontaine--set-face-attributes
+  'mode-line
+  (or (plist-get properties :mode-line-family) (plist-get properties :default-family))
+  (or (plist-get properties :mode-line-weight) (plist-get properties :default-weight))
+  (or (plist-get properties :mode-line-height) 1.0)
+  frame))
+
+(fontaine--apply-preset
+ fontaine--apply-mode-line-active-preset
+ "Set `mode-line-active' face attributes based on PRESET for optional FRAME."
+ (fontaine--set-face-attributes
+  'mode-line-active
+  (or (plist-get properties :mode-line-active-family) (plist-get properties :default-family))
+  (or (plist-get properties :mode-line-active-weight) (plist-get properties :default-weight))
+  (or (plist-get properties :mode-line-active-height) 1.0)
+  frame))
+
+(fontaine--apply-preset
+ fontaine--apply-mode-line-inactive-preset
+ "Set `mode-line-inactive' face attributes based on PRESET for optional FRAME."
+ (fontaine--set-face-attributes
+  'mode-line-inactive
+  (or (plist-get properties :mode-line-inactive-family) (plist-get properties :default-family))
+  (or (plist-get properties :mode-line-inactive-weight) (plist-get properties :default-weight))
+  (or (plist-get properties :mode-line-inactive-height) 1.0)
+  frame))
+
+(fontaine--apply-preset
+ fontaine--apply-header-line-preset
+ "Set `header-line' face attributes based on PRESET for optional FRAME."
+ (fontaine--set-face-attributes
+  'header-line
+  (or (plist-get properties :header-line-family) (plist-get properties :default-family))
+  (or (plist-get properties :header-line-weight) (plist-get properties :default-weight))
+  (or (plist-get properties :header-line-height) 1.0)
+  frame))
+
+(fontaine--apply-preset
+ fontaine--apply-line-number-preset
+ "Set `line-number' face attributes based on PRESET for optional FRAME."
+ (fontaine--set-face-attributes
+  'line-number
+  (or (plist-get properties :line-number-family) (plist-get properties :default-family))
+  (or (plist-get properties :line-number-weight) (plist-get properties :default-weight))
+  (or (plist-get properties :line-number-height) 1.0)
+  frame))
+
+(fontaine--apply-preset
  fontaine--apply-bold-preset
  "Set `bold' face attributes based on PRESET for optional FRAME."
  (fontaine--set-face-attributes
@@ -559,6 +665,10 @@ Call `fontaine-set-preset-hook' as a final step."
     (fontaine--apply-fixed-pitch-preset preset frame)
     (fontaine--apply-fixed-pitch-serif-preset preset frame)
     (fontaine--apply-variable-pitch-preset preset frame)
+    (fontaine--apply-mode-line-active-preset preset frame)
+    (fontaine--apply-mode-line-inactive-preset preset frame)
+    (fontaine--apply-header-line-preset preset frame)
+    (fontaine--apply-line-number-preset preset frame)
     (fontaine--apply-bold-preset preset frame)
     (fontaine--apply-italic-preset preset frame)
     (setq fontaine-current-preset preset)

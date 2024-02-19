@@ -71,12 +71,17 @@ Fontaine lets the user specify presets of font configurations and set
 them on demand on graphical Emacs frames.  The user option
 ~fontaine-presets~ holds all such presets.
 
-Presets consist of a list of properties that govern the family, weight,
-and height of the faces ~default~, ~fixed-pitch~, ~fixed-pitch-serif~,
-~variable-pitch~, ~bold~, and ~italic~.  Each preset is identified by a
-user-defined symbol as the car of a property list.  It looks like this
-(check the default value of ~fontaine-presets~ for how everything is
-pieced together):
+[ The support for the mode line, header line, and line number faces is
+  part of {{{development-version}}}. ]
+
+Presets consist of a list of properties that govern the family,
+weight, and height of the faces ~default~, ~fixed-pitch~,
+~fixed-pitch-serif~, ~variable-pitch~, ~mode-line-active~ (and
+~mode-line~ for older Emacs version), ~mode-line-inactive~,
+~header-line~, ~line-number~, ~bold~, and ~italic~. Each preset is
+identified by a user-defined symbol as the car of a property list. It
+looks like this (check the default value of ~fontaine-presets~ for how
+everything is pieced together):
 
 #+begin_src emacs-lisp
 (regular
@@ -85,15 +90,35 @@ pieced together):
  :default-family "Monospace"
  :default-weight regular
  :default-height 100
+
  :fixed-pitch-family nil ; falls back to :default-family
  :fixed-pitch-weight nil ; falls back to :default-weight
  :fixed-pitch-height 1.0
+
  :fixed-pitch-serif-family nil ; falls back to :default-family
  :fixed-pitch-serif-weight nil ; falls back to :default-weight
  :fixed-pitch-serif-height 1.0
+
  :variable-pitch-family "Sans"
  :variable-pitch-weight nil
  :variable-pitch-height 1.0
+
+ :mode-line-active-family nil ; falls back to :default-family
+ :mode-line-active-weight nil ; falls back to :default-weight
+ :mode-line-active-height 1.0
+
+ :mode-line-inactive-family nil ; falls back to :default-family
+ :mode-line-inactive-weight nil ; falls back to :default-weight
+ :mode-line-inactive-height 1.0
+
+ :header-line-family nil ; falls back to :default-family
+ :header-line-weight nil ; falls back to :default-weight
+ :header-line-height 1.0
+
+ :line-number-family nil ; falls back to :default-family
+ :line-number-weight nil ; falls back to :default-weight
+ :line-number-height 1.0
+
  :bold-family nil ; use whatever the underlying face has
  :bold-weight bold
  :italic-family nil
@@ -187,6 +212,8 @@ The user option ~fontaine-presets~ may look like this (though check its
 default value before you make any edits):
 
 #+begin_src emacs-lisp
+;; NOTE this example does not include all the properties that
+;; `fontaine-presets' accepts.
 (setq fontaine-presets
       '((regular
          :default-family "Hack"
@@ -287,6 +314,9 @@ multiple presets, such as the =regular= and =large= we have illustrated
 thus far.  Here is how verbose presets can be expressed succinctly:
 
 #+begin_src emacs-lisp
+;; NOTE this example does not include all the properties that
+;; `fontaine-presets' accepts.
+
 ;; Notice the duplication of properties and how we will avoid it.
 (setq fontaine-presets
       '((regular
@@ -545,28 +575,20 @@ Remember to read the relevant doc strings.
 ;; Iosevka Comfy Wide       == like Iosevka Comfy, but wider
 ;; Iosevka Comfy Wide Fixed == like Iosevka Comfy Fixed, but wider
 (setq fontaine-presets
-      '((tiny
-         :default-family "Iosevka Comfy Wide Fixed"
-         :default-height 70)
-        (small
-         :default-family "Iosevka Comfy Fixed"
-         :default-height 90)
-        (regular
-         :default-height 100)
+      '((small
+         :default-family "Iosevka Comfy Motion"
+         :default-height 80
+         :variable-pitch-family "Iosevka Comfy Duo")
+        (regular) ; like this it uses all the fallback values and is named `regular'
         (medium
-         :default-height 110)
+         :default-weight semilight
+         :default-height 115
+         :bold-weight extrabold)
         (large
-         :default-weight semilight
-         :default-height 140
-         :bold-weight extrabold)
+         :inherit medium
+         :default-height 150)
         (presentation
-         :default-weight semilight
-         :default-height 170
-         :bold-weight extrabold)
-        (jumbo
-         :default-weight semilight
-         :default-height 220
-         :bold-weight extrabold)
+         :default-height 180)
         (t
          ;; I keep all properties for didactic purposes, but most can be
          ;; omitted.  See the fontaine manual for the technicalities:
@@ -574,15 +596,35 @@ Remember to read the relevant doc strings.
          :default-family "Iosevka Comfy"
          :default-weight regular
          :default-height 100
+
          :fixed-pitch-family nil ; falls back to :default-family
          :fixed-pitch-weight nil ; falls back to :default-weight
          :fixed-pitch-height 1.0
+
          :fixed-pitch-serif-family nil ; falls back to :default-family
          :fixed-pitch-serif-weight nil ; falls back to :default-weight
          :fixed-pitch-serif-height 1.0
-         :variable-pitch-family "Iosevka Comfy Duo"
+
+         :variable-pitch-family "Iosevka Comfy Motion Duo"
          :variable-pitch-weight nil
          :variable-pitch-height 1.0
+
+         :mode-line-active-family nil ; falls back to :default-family
+         :mode-line-active-weight nil ; falls back to :default-weight
+         :mode-line-active-height 0.9
+
+         :mode-line-inactive-family nil ; falls back to :default-family
+         :mode-line-inactive-weight nil ; falls back to :default-weight
+         :mode-line-inactive-height 0.9
+
+         :header-line-family nil ; falls back to :default-family
+         :header-line-weight nil ; falls back to :default-weight
+         :header-line-height 0.9
+
+         :line-number-family nil ; falls back to :default-family
+         :line-number-weight nil ; falls back to :default-weight
+         :line-number-height 0.9
+
          :bold-family nil ; use whatever the underlying face has
          :bold-weight bold
          :italic-family nil
@@ -674,7 +716,7 @@ Fontaine is meant to be a collective effort.  Every bit of help matters.
 + Contributions to the code or manual :: Christopher League, Eli
   Zaretskii, Florent Teissier, Terry F. Torrey.
 
-+ Ideas and user feedback :: Joe Higton, Ted Reed.
++ Ideas and user feedback :: Ashlin Eldridge, Joe Higton, Ted Reed.
 
 * GNU Free Documentation License
 :PROPERTIES:
