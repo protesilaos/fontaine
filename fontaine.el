@@ -29,89 +29,9 @@
 ;; them on demand on graphical Emacs frames.  The user option
 ;; `fontaine-presets' holds all such presets.
 ;;
-;; Presets consist of a list of properties that govern the family, weight,
-;; and height of the faces `default', `fixed-pitch', `variable-pitch',
-;; `bold', and `italic'.  Each preset is identified by a user-defined
-;; symbol as the car of a property list.  It looks like this (check the
-;; default value of `fontaine-presets' for how everything is pieced
-;; together):
-;;
-;;     (regular
-;;      :default-family "Hack"
-;;      :default-weight normal
-;;      :default-height 100
-;;      :fixed-pitch-family "Fira Code"
-;;      :fixed-pitch-weight nil ; falls back to :default-weight
-;;      :fixed-pitch-height 1.0
-;;      :variable-pitch-family "Noto Sans"
-;;      :variable-pitch-weight normal
-;;      :variable-pitch-height 1.0
-;;      :bold-family nil ; use whatever the underlying face has
-;;      :bold-weight bold
-;;      :italic-family "Source Code Pro"
-;;      :italic-slant italic
-;;      :line-spacing 1)
-;;
-;; The doc string of `fontaine-presets' explains all properties in detail
-;; and documents some important caveats or information about font settings
-;; in Emacs.
-;;
-;; The command `fontaine-set-preset' applies the desired preset.  If there
-;; is only one available, it implements it outright.  Otherwise it produces
-;; a minibuffer prompt with completion among the available presets.  When
-;; called from Lisp, the `fontaine-set-preset' requires a PRESET argument,
-;; such as:
-;;
-;;     (fontaine-set-preset 'regular)
-;;
-;; The default behaviour of `fontaine-set-preset' is to change fonts across
-;; all graphical frames.  The user can, however, limit the changes to a
-;; given frame.  For interactive use, this is done by invoking the command
-;; with a universal prefix argument (`C-u' by default), which changes fonts
-;; only in the current frame.  When used in Lisp, the FRAME argument can be
-;; a frame object (satisfies `framep') or a non-nil value: the former
-;; applies the effects to the given object, while the latter means the
-;; current frame and thus is the same as interactively supplying the prefix
-;; argument.
-;;
-;; The command `fontaine-set-face-font' prompts with completion for a face
-;; and then asks the user to specify the value of the relevant properties.
-;; Preferred font families can be defined in the user option
-;; `fontaine-font-families', otherwise Fontaine will try to find suitable
-;; options among the fonts installed on the system (not always reliable,
-;; depending on the Emacs build and environment it runs in).  The list of
-;; faces to choose from is the same as that implied by the
-;; `fontaine-presets'.  Properties to change and their respective values
-;; will depend on the face.  For example, the `default' face requires a
-;; natural number for its height attribute, whereas every other face needs
-;; a floating point (understood as a multiple of the default height).  This
-;; command is for interactive use only and is supposed to be used for
-;; previewing certain styles before eventually codifying them as presets.
-;;
-;; Changing the `bold' and `italic' faces only has a noticeable effect if
-;; the underlying theme does not hardcode a weight and slant but inherits
-;; from those faces instead (e.g. the `modus-themes').
-;;
-;; The `fontaine-set-face-font' also accepts an optional FRAME argument,
-;; which is the same as what was described above for `fontaine-set-preset'.
-;;
-;; The latest value of `fontaine-set-preset' is stored in a file whose
-;; location is defined in `fontaine-latest-state-file' (normally part of
-;; the `.emacs.d' directory).  Saving is done by the function
-;; `fontaine-store-latest-preset', which should be assigned to a hook
-;; (e.g. `kill-emacs-hook').  To restore that value, the user can call the
-;; function `fontaine-restore-latest-preset' (such as by adding it to their
-;; init file).
-;;
-;; For users of the `no-littering' package, `fontaine-latest-state-file' is
-;; not stored in their `.emacs.d', but in a standard directory instead:
-;; <https://github.com/emacscollective/no-littering>.
-;;
-;; As for the name of this package, it is the French word for
-;; "fountain" which, in turn, is what the font or source is.  However,
-;; I will not blame you if you can only interpret it as a descriptive
-;; backronym: Fonts, Ornaments, and Neat Typography Are Irrelevant in
-;; Non-graphical Emacs.
+;; Consult the manual for all the available features.  And remember
+;; that Fonts, Ornaments, and Neat Typography Are Irrelevant in
+;; Non-graphical Emacs (FONTAINE).
 
 ;;; Code:
 
