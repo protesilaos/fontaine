@@ -567,13 +567,7 @@ Remember to read the relevant doc strings.
 ;; Iosevka Comfy is my highly customised build of Iosevka with
 ;; monospaced and duospaced (quasi-proportional) variants as well as
 ;; support or no support for ligatures:
-;; <https://git.sr.ht/~protesilaos/iosevka-comfy>.
-;;
-;; Iosevka Comfy            == monospaced, supports ligatures
-;; Iosevka Comfy Fixed      == monospaced, no ligatures
-;; Iosevka Comfy Duo        == quasi-proportional, supports ligatures
-;; Iosevka Comfy Wide       == like Iosevka Comfy, but wider
-;; Iosevka Comfy Wide Fixed == like Iosevka Comfy Fixed, but wider
+;; <https://github.com/protesilaos/iosevka-comfy>.
 (setq fontaine-presets
       '((small
          :default-family "Iosevka Comfy Motion"
