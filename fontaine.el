@@ -99,6 +99,14 @@
      :line-number-weight nil ; falls back to :default-weight
      :line-number-height 1.0
 
+     :tab-bar-family nil ; falls back to :default-family
+     :tab-bar-weight nil ; falls back to :default-weight
+     :tab-bar-height 1.0
+
+     :tab-line-family nil ; falls back to :default-family
+     :tab-line-weight nil ; falls back to :default-weight
+     :tab-line-height 1.0
+
      :bold-family nil ; use whatever the underlying face has
      :bold-weight bold
      :italic-family nil
@@ -168,6 +176,14 @@ The properties in detail:
   `:line-number-height' apply to the `line-number' face.  They
   all fall back to the respective default values, as described
   above.
+
+- The `:tab-bar-family', `:tab-bar-weight', and `:tab-bar-height'
+  apply to the `tab-bar' face.  They all fall back to the
+  respective default values, as described above.
+
+- The `:tab-line-family', `:tab-line-weight', and
+  `:tab-line-height' apply to the `tab-line' face.  They all fall
+  back to the respective default values, as described above.
 
 - The `:bold-family' and `:italic-family' are the font families
   of the `bold' and `italic' faces, respectively.  Only set them
@@ -256,6 +272,14 @@ Caveats or further notes:
                   ((const :tag "Line number font family" :line-number-family) string)
                   ((const :tag "Line number regular weight" :line-number-weight) ,fontaine--weights-widget)
                   ((const :tag "Line number height" :line-number-height) float)
+
+                  ((const :tag "Tab bar font family" :tab-bar-family) string)
+                  ((const :tag "Tab bar regular weight" :tab-bar-weight) ,fontaine--weights-widget)
+                  ((const :tag "Tab bar height" :tab-bar-height) float)
+
+                  ((const :tag "Tab line font family" :tab-line-family) string)
+                  ((const :tag "Tab line regular weight" :tab-line-weight) ,fontaine--weights-widget)
+                  ((const :tag "Tab line height" :tab-line-height) float)
 
                   ((const :tag "Font family of the `bold' face" :bold-family) string)
                   ((const :tag "Weight for the `bold' face" :bold-weight) ,fontaine--weights-widget)
@@ -507,6 +531,26 @@ ARGS are its routines."
   frame))
 
 (fontaine--apply-preset
+ fontaine--apply-tab-bar-preset
+ "Set `tab-bar' face attributes based on PRESET for optional FRAME."
+ (fontaine--set-face-attributes
+  'tab-bar
+  (or (plist-get properties :tab-bar-family) (plist-get properties :default-family))
+  (or (plist-get properties :tab-bar-weight) (plist-get properties :default-weight))
+  (or (plist-get properties :tab-bar-height) 1.0)
+  frame))
+
+(fontaine--apply-preset
+ fontaine--apply-tab-line-preset
+ "Set `tab-line' face attributes based on PRESET for optional FRAME."
+ (fontaine--set-face-attributes
+  'tab-line
+  (or (plist-get properties :tab-line-family) (plist-get properties :default-family))
+  (or (plist-get properties :tab-line-weight) (plist-get properties :default-weight))
+  (or (plist-get properties :tab-line-height) 1.0)
+  frame))
+
+(fontaine--apply-preset
  fontaine--apply-bold-preset
  "Set `bold' face attributes based on PRESET for optional FRAME."
  (fontaine--set-face-attributes
@@ -589,6 +633,8 @@ Call `fontaine-set-preset-hook' as a final step."
     (fontaine--apply-mode-line-inactive-preset preset frame)
     (fontaine--apply-header-line-preset preset frame)
     (fontaine--apply-line-number-preset preset frame)
+    (fontaine--apply-tab-bar-preset preset frame)
+    (fontaine--apply-tab-line-preset preset frame)
     (fontaine--apply-bold-preset preset frame)
     (fontaine--apply-italic-preset preset frame)
     (setq fontaine-current-preset preset)

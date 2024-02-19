@@ -71,17 +71,17 @@ Fontaine lets the user specify presets of font configurations and set
 them on demand on graphical Emacs frames.  The user option
 ~fontaine-presets~ holds all such presets.
 
-[ The support for the mode line, header line, and line number faces is
-  part of {{{development-version}}}. ]
+[ The support for the mode line, header line, line number, tab bar,
+  and tab line faces is part of {{{development-version}}}. ]
 
 Presets consist of a list of properties that govern the family,
 weight, and height of the faces ~default~, ~fixed-pitch~,
 ~fixed-pitch-serif~, ~variable-pitch~, ~mode-line-active~ (and
 ~mode-line~ for older Emacs version), ~mode-line-inactive~,
-~header-line~, ~line-number~, ~bold~, and ~italic~. Each preset is
-identified by a user-defined symbol as the car of a property list. It
-looks like this (check the default value of ~fontaine-presets~ for how
-everything is pieced together):
+~header-line~, ~line-number~, ~tab-bar~, ~tab-line~, ~bold~, and
+~italic~. Each preset is identified by a user-defined symbol as the
+car of a property list. It looks like this (check the default value of
+~fontaine-presets~ for how everything is pieced together):
 
 #+begin_src emacs-lisp
 (regular
@@ -118,6 +118,14 @@ everything is pieced together):
  :line-number-family nil ; falls back to :default-family
  :line-number-weight nil ; falls back to :default-weight
  :line-number-height 1.0
+
+ :tab-bar-family nil ; falls back to :default-family
+ :tab-bar-weight nil ; falls back to :default-weight
+ :tab-bar-height 1.0
+
+ :tab-line-family nil ; falls back to :default-family
+ :tab-line-weight nil ; falls back to :default-weight
+ :tab-line-height 1.0
 
  :bold-family nil ; use whatever the underlying face has
  :bold-weight bold
@@ -619,10 +627,20 @@ Remember to read the relevant doc strings.
          :line-number-weight nil ; falls back to :default-weight
          :line-number-height 0.9
 
+         :tab-bar-family nil ; falls back to :default-family
+         :tab-bar-weight nil ; falls back to :default-weight
+         :tab-bar-height 1.0
+
+         :tab-line-family nil ; falls back to :default-family
+         :tab-line-weight nil ; falls back to :default-weight
+         :tab-line-height 1.0
+
          :bold-family nil ; use whatever the underlying face has
          :bold-weight bold
+
          :italic-family nil
          :italic-slant italic
+
          :line-spacing nil)))
 
 ;; Recover last preset or fall back to desired style from
