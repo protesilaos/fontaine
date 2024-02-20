@@ -650,32 +650,38 @@ necessary to render the theme.  For certain faces, such as ~bold~ and
 ~italic~, it means that their font family may be reset (depending on the
 particularities of the theme).
 
-To avoid such a problem, we can arrange to restore the current font
-preset which was applied by ~fontaine-set-preset~.  Fontaine provides
-the command ~fontaine-apply-current-preset~.  It can either be called
-interactively after loading a theme or be assigned to a hook that is ran
-at the post ~load-theme~ phase.
+To avoid such a potential problem, we can arrange to restore the
+current font preset which was applied by ~fontaine-set-preset~.
+Fontaine provides the command ~fontaine-apply-current-preset~. It can
+either be called interactively after loading a theme or be assigned to
+a hook that is ran at the post ~load-theme~ phase.
 
-Some themes that provide a hook are the =modus-themes= and =ef-themes=
-(both by Protesilaos), so we can use something like:
+- [[#h:8f76ca89-a20c-4d76-89e6-423f1d8691a4][Theme-agnostic hook for Emacs 29 or higher]]
+- [[#h:bf6cbff8-647a-45e8-b0e7-d7588414394b][Theme-agnostic hook before Emacs 29]]
+
+** Theme-agnostic hook for Emacs 29 or higher
+:PROPERTIES:
+:CUSTOM_ID: h:8f76ca89-a20c-4d76-89e6-423f1d8691a4
+:END:
+
+Emacs 29 provides the ~enable-theme-functions~, which we can use to
+persist or restore a font preset thus ([[#h:f1b48050-e8e1-4689-b92f-7776bbaa55a4][Persist font configurations on theme switch]]):
 
 #+begin_src emacs-lisp
-(add-hook 'modus-themes-after-load-theme-hook #'fontaine-apply-current-preset))
+(add-hook 'enable-theme-functions #'fontaine-apply-current-preset)
 #+end_src
 
-If both packages are used, we can either write two lines of ~add-hook~
-or do this:
+** Theme-agnostic hook before Emacs 29
+:PROPERTIES:
+:CUSTOM_ID: h:bf6cbff8-647a-45e8-b0e7-d7588414394b
+:END:
 
-#+begin_src emacs-lisp
-;; Persist font configurations while switching themes (doing it with
-;; my `modus-themes' and `ef-themes' via the hooks they provide).
-(dolist (hook '(modus-themes-after-load-theme-hook ef-themes-post-load-hook))
-  (add-hook hook #'fontaine-apply-current-preset))
-#+end_src
+For versions of Emacs before 29, there is no built-in theme-agnostic
+solution to persisting or restoring a font preset ([[#h:8f76ca89-a20c-4d76-89e6-423f1d8691a4][Theme-agnostic hook for Emacs 29 or higher]]).
 
-Themes must specify a hook that is called by their relevant commands at
-the post-theme-load phase.  This can also be done in a theme-agnostic
-way:
+Themes have to specify a hook that is called by their relevant
+commands at the post-theme-load phase. This can also be done in a
+generic way:
 
 #+begin_src emacs-lisp
 ;; Set up the `after-enable-theme-hook'
