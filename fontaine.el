@@ -394,11 +394,36 @@ combine the other two lists."
    (frame nil)
    (t 0)))
 
-(defun fontaine--set-face-attributes (face family &optional weight height frame)
-  "Set FACE font to FAMILY, with optional HEIGHT, WEIGHT, FRAME."
-  (let ((family (or family "Monospace"))
-        (height (or height (if (eq face 'default) 100 1.0)))
-        (weight (or weight 'normal))
+(defun fontaine--set-face-attributes (face family &optional weight slant height frame)
+  "Set FACE font to FAMILY, with optional WEIGHT, SLANT, HEIGHT, FRAME."
+  (let ((family (cond
+                 ((and (eq face 'variable-pitch)
+                       (or (eq family 'unspecified)
+                           (null family)))
+                  "Sans")
+                 (family family)
+                 (t "Monospace")))
+        (height (cond
+                 ((and (eq face 'default)
+                       (or (eq height 'unspecified)
+                           (null height)))
+                  100)
+                 (height height)
+                 (t 1.0)))
+        (weight (cond
+                 ((and (eq face 'bold)
+                       (or (eq weight 'unspecified)
+                           (null weight)))
+                  'bold)
+                 (weight weight)
+                 (t 'normal)))
+        (slant (cond
+                 ((and (eq face 'italic)
+                       (or (eq slant 'unspecified)
+                           (null slant)))
+                  'italic)
+                 (slant slant)
+                 (t 'normal)))
         (frames (fontaine--frame frame)))
     ;; ;; Read this: <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45920>
     ;; ;; Hence why the following fails.  Keeping it for posterity...
@@ -406,20 +431,11 @@ combine the other two lists."
     (if (eq (face-attribute face :weight) weight)
         (internal-set-lisp-face-attribute face :family family frames)
       (internal-set-lisp-face-attribute face :weight weight frames)
+      (internal-set-lisp-face-attribute face :slant slant frames)
       (internal-set-lisp-face-attribute face :family family frames)
-      (internal-set-lisp-face-attribute face :weight weight frames))
+      (internal-set-lisp-face-attribute face :weight weight frames)
+      (internal-set-lisp-face-attribute face :slant slant frames))
     (internal-set-lisp-face-attribute face :height height frames)))
-
-(defun fontaine--set-italic-slant (family slant &optional frame)
-  "Set FAMILY and SLANT of `italic' face on optional FRAME."
-  (let ((slant (or slant 'italic))
-        (family (or family 'unspecified))
-        (frames (fontaine--frame frame)))
-    (if (eq (face-attribute 'italic :slant) slant)
-        (internal-set-lisp-face-attribute 'italic :family family frames)
-      (internal-set-lisp-face-attribute 'italic :slant slant frames)
-      (internal-set-lisp-face-attribute 'italic :family family frames)
-      (internal-set-lisp-face-attribute 'italic :slant slant frames))))
 
 ;;;; Apply preset configurations
 
