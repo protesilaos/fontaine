@@ -66,6 +66,10 @@ modify this GNU manual.”
 :CUSTOM_ID: h:62d716b4-44f7-4078-85d2-29a7da8ca253
 :END:
 
+[ The command ~fontaine-set-face-font~ is removed from the
+  {{{development-version}}} because it is not consistent with the rest
+  of the functionality of Fontaine. ]
+
 #+vindex: fontaine-presets
 Fontaine lets the user specify presets of font configurations and set
 them on demand on graphical Emacs frames.  The user option
@@ -164,29 +168,6 @@ argument.
 #+vindex: fontaine-set-preset-hook
 As a final step, ~fontaine-set-preset~ calls the ~fontaine-set-preset-hook~.
 [ This is part of {{{development-version}}}. ]
-
-#+findex: fontaine-set-face-font
-#+vindex: fontaine-font-families
-The command ~fontaine-set-face-font~ prompts with completion for a face
-and then asks the user to specify the value of the relevant properties.
-Preferred font families can be defined in the user option
-~fontaine-font-families~, otherwise Fontaine will try to find suitable
-options among the fonts installed on the system (not always reliable,
-depending on the Emacs build and environment it runs in).  The list of
-faces to choose from is the same as that implied by the
-~fontaine-presets~.  Properties to change and their respective values
-will depend on the face.  For example, the ~default~ face requires a
-natural number for its height attribute, whereas every other face needs
-a floating point (understood as a multiple of the default height).  This
-command is for interactive use only and is supposed to be used for
-previewing certain styles before eventually codifying them as presets.
-
-Changing the ~bold~ and ~italic~ faces only has a noticeable effect if
-the underlying theme does not hardcode a weight and slant but inherits
-from those faces instead (e.g. the ~modus-themes~).
-
-The ~fontaine-set-face-font~ also accepts an optional FRAME argument,
-which is the same as what was described above for ~fontaine-set-preset~.
 
 #+vindex: fontaine-latest-state-file
 #+findex: fontaine-store-latest-preset
@@ -655,7 +636,6 @@ Remember to read the relevant doc strings.
 ;;
 ;;     (info "(elisp) Key Binding Conventions")
 (define-key global-map (kbd "C-c f") #'fontaine-set-preset)
-(define-key global-map (kbd "C-c F") #'fontaine-set-face-font)
 #+end_src
 
 ** Persist font configurations on theme switch
