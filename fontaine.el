@@ -498,8 +498,8 @@ the command `fontaine-apply-current-preset'.")
 (defun fontaine-set-preset (preset &optional frame)
   "Set font configurations specified in PRESET.
 PRESET is a symbol that represents the car of a list in
-`fontaine-presets'.  If there is only one available, apply it
-outright, else prompt with completion.
+`fontaine-presets'.  When called interactively, prompt for
+PRESET.g
 
 Unless optional FRAME argument is supplied, apply the change to
 all frames.  If FRAME satisfies `framep', then make the changes
@@ -514,12 +514,7 @@ Set `fontaine-current-preset' to PRESET.  Also see the command
 `fontaine-apply-current-preset'.
 
 Call `fontaine-set-preset-hook' as a final step."
-  (interactive
-   (list
-    (if (= (length fontaine-presets) 1)
-        (caar fontaine-presets)
-      (fontaine--set-fonts-prompt))
-    current-prefix-arg))
+  (interactive (list (fontaine--set-fonts-prompt) current-prefix-arg))
   (if (and (not (daemonp)) (not window-system))
       (user-error "Cannot use this in a terminal emulator; try the Emacs GUI")
     (fontaine--set-faces preset frame)

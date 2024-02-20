@@ -144,12 +144,16 @@ in Emacs.
 
 [[#h:35bc7f51-6368-4718-ad25-b276a1f2cc08][Shared and implicit fallback values for presets]].
 
+[ As part of {{{development-version}}}, the ~fontaine-set-preset~
+  always prompts for a preset when called interactively, even if there
+  is only one preset available. This is how all prompts work in Emacs,
+  so better be consistent with them. ]
+
 #+findex: fontaine-set-preset
-The command ~fontaine-set-preset~ applies the desired preset.  If there
-is only one available, it implements it outright.  Otherwise it produces
-a minibuffer prompt with completion among the available presets.  When
-called from Lisp, the ~fontaine-set-preset~ requires a PRESET argument,
-such as:
+The command ~fontaine-set-preset~ applies the desired preset. If
+called interactively, it produces a minibuffer prompt with completion
+among the available presets. When called from Lisp, it requires a
+=PRESET= argument, such as:
 
 #+begin_src emacs-lisp
 (fontaine-set-preset 'regular)
