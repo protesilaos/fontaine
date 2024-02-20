@@ -57,6 +57,13 @@
            (const :tag "Ultra-bold" ultrabold))
   "Widget with font weights for `fontaine-presets'.")
 
+(defconst fontaine-faces
+  '( default fixed-pitch variable-pitch
+     mode-line-active mode-line-inactive
+     line-number tab-bar tab-line
+     bold italic)
+  "List of faces with relevant font attributes.")
+
 (defcustom fontaine-presets
   '((regular
      :default-height 100)
@@ -424,156 +431,35 @@ combine the other two lists."
               (alist-get inherit presets))
             (alist-get t presets))))
 
-(defmacro fontaine--apply-preset (fn doc args)
-  "Produce function to apply preset.
-FN is the symbol of the function, DOC is its documentation, and
-ARGS are its routines."
-  `(defun ,fn (preset &optional frame)
-     ,doc
-     (if-let ((properties (fontaine--get-preset-properties preset)))
-         ,args
-       ;; FIXME 2022-09-07: Because we `append' the t of
-       ;; `fontaine-presets' this error is only relevant when the list
-       ;; is empty.  Perhaps we can harden the condition.  Otherwise we
-       ;; should reword this.
-       (user-error "%s is not in `fontaine-presets' or is empty" preset))))
+(defun fontaine--get-preset-property (preset property)
+  "Get PRESET's PROPERTY."
+  (plist-get (fontaine--get-preset-properties preset) property))
 
-(fontaine--apply-preset
- fontaine--apply-default-preset
- "Set `default' face attributes based on PRESET for optional FRAME."
- (progn
-   (fontaine--set-face-attributes
-    'default
-    (plist-get properties :default-family)
-    (plist-get properties :default-weight)
-    (plist-get properties :default-height)
-    frame)
-   (setq-default line-spacing (plist-get properties :line-spacing))))
+(defun fontaine--set-face (preset face &optional frame)
+  "Set font properties taken from PRESET to FACE in optional FRAME.
+If FRAME is nil, apply the effect to all frames."
+  (let ((properties (fontaine--get-preset-properties preset)))
+    (fontaine--set-face-attributes
+     face
+     (or (plist-get properties (intern (format ":%s-family" face))) 'unspecified)
+     (or (plist-get properties (intern (format ":%s-weight" face))) 'unspecified)
+     (or (plist-get properties (intern (format ":%s-height" face))) 'unspecified)
+     frame)))
 
-(fontaine--apply-preset
- fontaine--apply-fixed-pitch-preset
- "Set `fixed-pitch' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'fixed-pitch
-  (or (plist-get properties :fixed-pitch-family) (plist-get properties :default-family))
-  (or (plist-get properties :fixed-pitch-weight) (plist-get properties :default-weight))
-  (or (plist-get properties :fixed-pitch-height) 1.0)
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-fixed-pitch-serif-preset
- "Set `fixed-pitch-serif' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'fixed-pitch-serif
-  (or (plist-get properties :fixed-pitch-family) (plist-get properties :default-family))
-  (or (plist-get properties :fixed-pitch-weight) (plist-get properties :default-weight))
-  (or (plist-get properties :fixed-pitch-height) 1.0)
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-variable-pitch-preset
- "Set `variable-pitch' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'variable-pitch
-  (or (plist-get properties :variable-pitch-family) (plist-get properties :default-family))
-  (or (plist-get properties :variable-pitch-weight) (plist-get properties :default-weight))
-  (or (plist-get properties :variable-pitch-height) 1.0)
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-mode-line-preset
- "Set `mode-line' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'mode-line
-  (or (plist-get properties :mode-line-family) (plist-get properties :default-family))
-  (or (plist-get properties :mode-line-weight) (plist-get properties :default-weight))
-  (or (plist-get properties :mode-line-height) 1.0)
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-mode-line-active-preset
- "Set `mode-line-active' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'mode-line-active
-  (or (plist-get properties :mode-line-active-family) (plist-get properties :default-family))
-  (or (plist-get properties :mode-line-active-weight) (plist-get properties :default-weight))
-  (or (plist-get properties :mode-line-active-height) 1.0)
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-mode-line-inactive-preset
- "Set `mode-line-inactive' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'mode-line-inactive
-  (or (plist-get properties :mode-line-inactive-family) (plist-get properties :default-family))
-  (or (plist-get properties :mode-line-inactive-weight) (plist-get properties :default-weight))
-  (or (plist-get properties :mode-line-inactive-height) 1.0)
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-header-line-preset
- "Set `header-line' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'header-line
-  (or (plist-get properties :header-line-family) (plist-get properties :default-family))
-  (or (plist-get properties :header-line-weight) (plist-get properties :default-weight))
-  (or (plist-get properties :header-line-height) 1.0)
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-line-number-preset
- "Set `line-number' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'line-number
-  (or (plist-get properties :line-number-family) (plist-get properties :default-family))
-  (or (plist-get properties :line-number-weight) (plist-get properties :default-weight))
-  (or (plist-get properties :line-number-height) 1.0)
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-tab-bar-preset
- "Set `tab-bar' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'tab-bar
-  (or (plist-get properties :tab-bar-family) (plist-get properties :default-family))
-  (or (plist-get properties :tab-bar-weight) (plist-get properties :default-weight))
-  (or (plist-get properties :tab-bar-height) 1.0)
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-tab-line-preset
- "Set `tab-line' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'tab-line
-  (or (plist-get properties :tab-line-family) (plist-get properties :default-family))
-  (or (plist-get properties :tab-line-weight) (plist-get properties :default-weight))
-  (or (plist-get properties :tab-line-height) 1.0)
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-bold-preset
- "Set `bold' face attributes based on PRESET for optional FRAME."
- (fontaine--set-face-attributes
-  'bold
-  (or (plist-get properties :bold-family) 'unspecified)
-  (or (plist-get properties :bold-weight) 'bold)
-  'unspecified
-  frame))
-
-(fontaine--apply-preset
- fontaine--apply-italic-preset
- "Set `italic' face attributes based on PRESET for optional FRAME."
- (fontaine--set-italic-slant
-  (or (plist-get properties :italic-family) 'unspecified)
-  (or (plist-get properties :italic-slant) 'italic)
-  frame))
+(defun fontaine--set-faces (preset frame)
+  "Set all `fontaine-faces' according to PRESET in FRAME."
+  (mapc
+   (lambda (face)
+     (fontaine--set-face preset face frame))
+   fontaine-faces)
+  (setq-default line-spacing (fontaine--get-preset-property preset :line-spacing)))
 
 (defvar fontaine--font-display-hist '()
   "History of inputs for display-related font associations.")
 
 (defun fontaine--presets-no-fallback ()
   "Return list of `fontaine-presets', minus the fallback value."
-  (delete
+  (delq
    nil
    (mapcar (lambda (symbol)
              (unless (eq (car symbol) t)
@@ -625,18 +511,7 @@ Call `fontaine-set-preset-hook' as a final step."
     current-prefix-arg))
   (if (and (not (daemonp)) (not window-system))
       (user-error "Cannot use this in a terminal emulator; try the Emacs GUI")
-    (fontaine--apply-default-preset preset frame)
-    (fontaine--apply-fixed-pitch-preset preset frame)
-    (fontaine--apply-fixed-pitch-serif-preset preset frame)
-    (fontaine--apply-variable-pitch-preset preset frame)
-    (fontaine--apply-mode-line-active-preset preset frame)
-    (fontaine--apply-mode-line-inactive-preset preset frame)
-    (fontaine--apply-header-line-preset preset frame)
-    (fontaine--apply-line-number-preset preset frame)
-    (fontaine--apply-tab-bar-preset preset frame)
-    (fontaine--apply-tab-line-preset preset frame)
-    (fontaine--apply-bold-preset preset frame)
-    (fontaine--apply-italic-preset preset frame)
+    (fontaine--set-faces preset frame)
     (setq fontaine-current-preset preset)
     (unless frame
       (add-to-history 'fontaine--preset-history (format "%s" preset)))
