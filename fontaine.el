@@ -41,6 +41,15 @@
   "Set font configurations using presets."
   :group 'font)
 
+(defvar fontaine-font-weights
+  '( thin ultralight extralight light semilight regular medium
+     semibold bold heavy extrabold ultrabold)
+  "List of font weights.")
+
+(defvar fontaine-font-slants
+  '(normal italic oblique reverse-italic reverse-oblique)
+  "List of font slants.")
+
 (defconst fontaine--weights-widget
   '(choice :tag "Font weight (must be supported by the typeface)"
            (const :tag "Normal" normal)
@@ -198,12 +207,14 @@ The properties in detail:
 
 - The `:bold-weight' specifies the weight of the `bold' face.
   Its fallback value is bold, meaning the weight, not the face.
+  For more, refer to the value of `fontaine-font-weights'.  The
+  font family must support the given weight.
 
 - The `:italic-slant' specifies the slant of the `italic' face.
   Its fallback value is italic, in reference to the slant, not
-  the face.  Acceptable values are `italic', `oblique', `normal',
-  `reverse-italic', `reverse-oblique' and must be supported by
-  the underlying typeface.
+  the face.  Acceptable values are those included in the value of
+  `fontaine-font-slants' and must be supported by the underlying
+  typeface
 
 - The `:line-spacing' specifies the value of the `line-spacing'
   variable.
