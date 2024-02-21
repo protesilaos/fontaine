@@ -91,12 +91,12 @@
             ,(intern (format ":%s-family" face)))
      string)
    `((const :tag ,(format "%s weight" face)
-            ,(intern (format ":%s-weight" face))
+            ,(intern (format ":%s-weight" face)))
      ,fontaine--weights-widget)
    `((const :tag ,(format "%s slant" face)
             ,(intern (format ":%s-slant" face)))
      ,fontaine--slants-widget)
-   `((const :tag ,(format "%s height" face) ,(intern (format ":%s-height" face))) float))))
+   `((const :tag ,(format "%s height" face) ,(intern (format ":%s-height" face))) float)))
 
 (defcustom fontaine-presets
   '((regular
