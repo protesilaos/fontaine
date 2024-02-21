@@ -67,6 +67,16 @@
            (const :tag "Use fallback value" nil))
   "Widget with font weights for `fontaine-presets'.")
 
+(defconst fontaine--slants-widget
+  '(choice :tag "Font slant (must be supported by the typeface)"
+           (const italic)
+           (const oblique)
+           (const normal)
+           (const reverse-italic)
+           (const reverse-oblique)
+           (const :tag "Use fallback value" nil))
+  "Widget with font slants for `fontaine-presets'.")
+
 (defconst fontaine-faces
   '( default fixed-pitch variable-pitch
      mode-line-active mode-line-inactive
