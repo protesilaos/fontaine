@@ -63,7 +63,8 @@
            (const :tag "Semi-bold" semibold)
            (const :tag "Bold" bold)
            (const :tag "Extra-bold" extrabold)
-           (const :tag "Ultra-bold" ultrabold))
+           (const :tag "Ultra-bold" ultrabold)
+           (const :tag "Use fallback value" nil))
   "Widget with font weights for `fontaine-presets'.")
 
 (defconst fontaine-faces
