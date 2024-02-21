@@ -96,7 +96,7 @@
    `((const :tag ,(format "%s slant" face)
             ,(intern (format ":%s-slant" face)))
      ,fontaine--slants-widget)
-   `((const :tag ,(format "%s height" face) ,(intern (format ":%s-height" face))) float)))
+   `((const :tag ,(format "%s height" face) ,(intern (format ":%s-height" face))) float))))
 
 (defcustom fontaine-presets
   '((regular
