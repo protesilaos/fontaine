@@ -413,8 +413,8 @@ combine the other two lists."
 
 (defun fontaine--get-inherit-name (preset)
   "Get the `:inherit' value of PRESET."
-  (when-let* ((inherit (plist-get (alist-get preset fontaine-presets) :inherit))
-              (fontaine--preset-p inherit))
+  (when-let ((inherit (plist-get (alist-get preset fontaine-presets) :inherit))
+             (fontaine--preset-p inherit))
     inherit))
 
 (defun fontaine--get-preset-properties (preset)
@@ -557,8 +557,8 @@ Can be assigned to `kill-emacs-hook'."
 (defun fontaine-restore-latest-preset ()
   "Restore latest preset set by `fontaine-set-preset'.
 The value is stored in `fontaine-latest-state-file'."
-  (when-let* ((file fontaine-latest-state-file)
-              ((file-exists-p file)))
+  (when-let ((file fontaine-latest-state-file)
+             ((file-exists-p file)))
     (setq fontaine-recovered-preset
           (unless (zerop
                    (or (file-attribute-size (file-attributes file))
