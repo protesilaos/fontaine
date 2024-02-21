@@ -84,6 +84,20 @@
      bold italic)
   "List of faces with relevant font attributes.")
 
+(defun fontaine--get-face-widget (face)
+  "Define `fontaine-presets' properties for FACE as a widget."
+  (list
+   `((const :tag ,(format "%s font family" face)
+            ,(intern (format ":%s-family" face)))
+     string)
+   `((const :tag ,(format "%s weight" face)
+            ,(intern (format ":%s-weight" face))
+     ,fontaine--weights-widget)
+   `((const :tag ,(format "%s slant" face)
+            ,(intern (format ":%s-slant" face)))
+     ,fontaine--slants-widget)
+   `((const :tag ,(format "%s height" face) ,(intern (format ":%s-height" face))) float)))
+
 (defcustom fontaine-presets
   '((regular
      :default-height 100)
@@ -274,53 +288,10 @@ Caveats or further notes:
                   ((const :tag "Default weight" :default-weight) ,fontaine--weights-widget)
                   ((const :tag "Default height" :default-height) natnum)
 
-                  ((const :tag "Fixed pitch font family" :fixed-pitch-family) string)
-                  ((const :tag "Fixed pitch regular weight" :fixed-pitch-weight) ,fontaine--weights-widget)
-                  ((const :tag "Fixed pitch height" :fixed-pitch-height) float)
-
-                  ((const :tag "Fixed pitch serif font family" :fixed-pitch-serif-family) string)
-                  ((const :tag "Fixed pitch serif regular weight" :fixed-pitch-serif-weight) ,fontaine--weights-widget)
-                  ((const :tag "Fixed pitch serif height" :fixed-pitch-serif-height) float)
-
-                  ((const :tag "Variable pitch font family" :variable-pitch-family) string)
-                  ((const :tag "Variable pitch regular weight" :variable-pitch-weight) ,fontaine--weights-widget)
-                  ((const :tag "Variable pitch height" :variable-pitch-height) float)
-
-                  ((const :tag "Active mode line font family" :mode-line-active-family) string)
-                  ((const :tag "Active mode line regular weight" :mode-line-active-weight) ,fontaine--weights-widget)
-                  ((const :tag "Active mode line height" :mode-line-active-height) float)
-
-                  ((const :tag "Inactive mode line font family" :mode-line-inactive-family) string)
-                  ((const :tag "Inactive mode line regular weight" :mode-line-inactive-weight) ,fontaine--weights-widget)
-                  ((const :tag "Inactive mode line height" :mode-line-inactive-height) float)
-
-                  ((const :tag "Header line font family" :header-line-family) string)
-                  ((const :tag "Header line regular weight" :header-line-weight) ,fontaine--weights-widget)
-                  ((const :tag "Header line height" :header-line-height) float)
-
-                  ((const :tag "Line number font family" :line-number-family) string)
-                  ((const :tag "Line number regular weight" :line-number-weight) ,fontaine--weights-widget)
-                  ((const :tag "Line number height" :line-number-height) float)
-
-                  ((const :tag "Tab bar font family" :tab-bar-family) string)
-                  ((const :tag "Tab bar regular weight" :tab-bar-weight) ,fontaine--weights-widget)
-                  ((const :tag "Tab bar height" :tab-bar-height) float)
-
-                  ((const :tag "Tab line font family" :tab-line-family) string)
-                  ((const :tag "Tab line regular weight" :tab-line-weight) ,fontaine--weights-widget)
-                  ((const :tag "Tab line height" :tab-line-height) float)
-
-                  ((const :tag "Font family of the `bold' face" :bold-family) string)
-                  ((const :tag "Weight for the `bold' face" :bold-weight) ,fontaine--weights-widget)
-
-                  ((const :tag "Font family of the `italic' face" :italic-family) string)
-                  ((const :tag "Slant for the `italic' face" :italic-slant)
-                   (choice
-                    (const italic)
-                    (const oblique)
-                    (const normal)
-                    (const reverse-italic)
-                    (const reverse-oblique)))
+                  ,@(mapcan
+                     (lambda (face)
+                       (fontaine--get-face-widget face))
+                     (delq 'default fontaine-faces))
 
                   ((const :tag "Line spacing" :line-spacing) ,(get 'line-spacing 'custom-type))
                   ;; FIXME 2023-01-19: Adding the (choice
