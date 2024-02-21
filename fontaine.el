@@ -288,23 +288,14 @@ Caveats or further notes:
                      (delq 'default fontaine-faces))
 
                   ((const :tag "Line spacing" :line-spacing) ,(get 'line-spacing 'custom-type))
-                  ;; FIXME 2023-01-19: Adding the (choice
-                  ;; ,@(fontaine--inheritable-presets-widget)) instead
-                  ;; of `symbol' does not have the desired effect
-                  ;; because it does not re-read `fontaine-presets'.
-                  ((const :tag "Inherit another preset" :inherit) symbol)))
-          :key-type symbol)
+                  ((const :tag "Inherit another preset" :inherit) symbol
+                   ;; FIXME 2024-02-21: Is this correct?  It does not seem to work...
+                   :match (lambda (_widget value)
+                            (memq value (delq t (mapcar #'car fontaine-presets))))))
+          :key-type symbol))
   :package-version '(fontaine . "1.1.0")
   :group 'fontaine
   :link '(info-link "(fontaine) Shared and implicit fallback values for presets"))
-
-;; ;; See FIXME above in `fontaine-presets' :type.
-;; ;;
-;; (defun fontaine--inheritable-presets-widget ()
-;;   "Return widget with choice among named presets."
-;;   (mapcar (lambda (s)
-;;             (list 'const s))
-;;           (delq t (mapcar #'car fontaine-presets))))
 
 (defcustom fontaine-latest-state-file
   (locate-user-emacs-file "fontaine-latest-state.eld")
