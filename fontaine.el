@@ -528,7 +528,7 @@ Protesilaos).  Alternatively, Emacs 29 provides the special
 which this function ignores"
   (interactive)
   (if-let ((current fontaine-current-preset)
-           ((alist-get current fontaine-presets)))
+           ((fontaine--preset-p current)))
       (fontaine-set-preset current)
     (user-error "The `fontaine-current-preset' is not among `fontaine-presets'")))
 
