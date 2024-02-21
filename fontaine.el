@@ -78,7 +78,7 @@
   "Widget with font slants for `fontaine-presets'.")
 
 (defconst fontaine-faces
-  '( default fixed-pitch variable-pitch
+  '( default fixed-pitch fixed-pitch-serif variable-pitch
      mode-line-active mode-line-inactive
      line-number tab-bar tab-line
      bold italic)
