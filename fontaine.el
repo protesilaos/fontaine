@@ -538,14 +538,16 @@ which this function ignores"
 (defun fontaine-store-latest-preset ()
   "Write latest cursor state to `fontaine-latest-state-file'.
 Can be assigned to `kill-emacs-hook'."
-  (when-let ((hist fontaine--preset-history))
+  (when-let ((hist fontaine--preset-history)
+             (latest (car hist))
+             ((not (member latest '("nil" "t")))))
     (with-temp-file fontaine-latest-state-file
       (insert ";; Auto-generated file; don't edit -*- mode: "
               (if (<= 28 emacs-major-version)
                   "lisp-data"
                 "emacs-lisp")
               " -*-\n")
-      (pp (intern (car hist)) (current-buffer)))))
+      (pp (intern latest) (current-buffer)))))
 
 (defvar fontaine-recovered-preset nil
   "Recovered value of latest store cursor preset.")
