@@ -187,7 +187,7 @@ specifier.  For example, with the `default' face, we have
 `:default-family', `:default-height', `:default-weight', and
 `:default-slant'.
 
-The properties in mode detail:
+The properties in more detail:
 
 - The font family is a string that refers to the name of the
   font.
