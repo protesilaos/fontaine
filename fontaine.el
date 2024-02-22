@@ -404,7 +404,7 @@ combine the other two lists."
 
 (defun fontaine--preset-p (preset)
   "Return non-nil if PRESET is one of the named `fontaine-presets'."
-  (let ((presets (delq t (mapcar #'car fontaine-presets))))
+  (let ((presets (mapcar #'car fontaine-presets)))
     (memq preset presets)))
 
 (defun fontaine--get-inherit-name (preset)
