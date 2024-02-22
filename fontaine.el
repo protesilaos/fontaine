@@ -311,7 +311,7 @@ Caveats or further notes:
                    ;; FIXME 2024-02-21: Is this correct?  It does not seem to work...
                    :match (lambda (_widget value)
                             (memq value (delq t (mapcar #'car fontaine-presets))))))
-          :key-type symbol))
+                 :key-type symbol))
   :package-version '(fontaine . "1.1.0")
   :group 'fontaine
   :link '(info-link "(fontaine) Shared and implicit fallback values for presets"))
