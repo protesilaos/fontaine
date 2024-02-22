@@ -41,12 +41,12 @@
   "Set font configurations using presets."
   :group 'font)
 
-(defvar fontaine-font-weights
+(defvar fontaine-weights
   '( thin ultralight extralight light semilight regular medium
      semibold bold heavy extrabold ultrabold)
   "List of font weights.")
 
-(defvar fontaine-font-slants
+(defvar fontaine-slants
   '(normal italic oblique reverse-italic reverse-oblique)
   "List of font slants.")
 
