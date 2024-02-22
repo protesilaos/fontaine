@@ -508,5 +508,33 @@ The value is stored in `fontaine-latest-state-file'."
               (insert-file-contents file)
               (read (current-buffer)))))))
 
+;; ;; Recover last preset or fall back to desired style from
+;; ;; `fontaine-presets'.
+;; (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
+;; 
+;; ;; The other side of `fontaine-restore-latest-preset'.
+;; (add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+
+;;;###autoload
+(define-minor-mode fontaine-mode
+  "Persist Fontaine presets.
+Arrange to store and restore the current Fontaine preset when
+closing and restarting Emacs.  Also, do it for theme switching,
+if the Emacs version is 29 or higher.
+
+[ Note that in older versions of Emacs we do not have a hook that
+  is called at the post-theme-load phase.  Users can do this by
+  installing an advice.  Read the Info node `(fontaine)
+  Theme-agnostic hook before Emacs 29'.  ]"
+  :global t
+  (if fontaine-mode
+      (progn
+        (add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+        (add-hook 'fontaine-set-preset-hook #'fontaine-store-latest-preset)
+        (add-hook 'enable-theme-functions #'fontaine-apply-current-preset))
+    (remove-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+    (remove-hook 'fontaine-set-preset-hook #'fontaine-store-latest-preset)
+    (remove-hook 'enable-theme-functions #'fontaine-apply-current-preset)))
+
 (provide 'fontaine)
 ;;; fontaine.el ends here
