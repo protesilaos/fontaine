@@ -659,6 +659,10 @@ Remember to read the relevant doc strings.
 
          :line-spacing nil)))
 
+;; Set last preset or fall back to desired style from `fontaine-presets'
+;; (the `regular' in this case).
+(fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
+
 ;; Persist the latest font preset when closing/starting Emacs and
 ;; while switching between themes.
 (fontaine-mode 1)
