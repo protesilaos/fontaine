@@ -270,42 +270,7 @@ This is then used to restore the last value with the function
   :package-version '(fontaine . "0.1.0")
   :group 'fontaine)
 
-(defcustom fontaine-font-families nil
-  "An alist of preferred font families.
-
-The expected value of this option is a triplet of cons cells
-where the car is `default', `fixed-pitch', or `variable-pitch'
-and the cdr is a list of strings that reference font family
-names.  For example:
-
-    (setq fontaine-font-families
-          \\='((default \"Iosevka Comfy\" \"Hack\" \"Roboto Mono\")
-            (fixed-pitch \"Mononoki\" \"Source Code Pro\" \"Fira Code\")
-            (variable-pitch \"Noto Sans\" \"Roboto\" \"FiraGO\")))
-
-
-This is used at the minibuffer prompt while using the command
-`fontaine-set-face-font' to prompt for a font family.  When this
-user option is nil, that prompt will try to find all relevant
-fonts installed on the system, which might not always be
-reliable (depending on the Emacs build and the environment it
-runs in).
-
-If only the `default' is nil and the others are specified, the
-command `fontaine-set-face-font' will produce results that
-combine the other two lists."
-  :type '(set
-          (cons :tag "Default font families"
-                (const default)
-                (repeat string))
-          (cons :tag "Fixed pitch font families"
-                (const fixed-pitch)
-                (repeat string))
-          (cons :tag "Variable pitch font families"
-                (const variable-pitch)
-                (repeat string)))
-  :package-version '(fontaine . "0.2.0")
-  :group 'fontaine)
+(make-obsolete-variable 'fontaine-font-families nil "1.1.0")
 
 (defcustom fontaine-set-preset-hook nil
   "Hook that runs after setting fonts with `fontaine-set-preset'."
