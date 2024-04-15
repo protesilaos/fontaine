@@ -492,7 +492,7 @@ Can be assigned to `kill-emacs-hook'."
       (pp (intern latest) (current-buffer)))))
 
 (defvar fontaine-recovered-preset nil
-  "Recovered value of latest store cursor preset.")
+  "Recovered value of latest stored font preset.")
 
 ;;;###autoload
 (defun fontaine-restore-latest-preset ()
