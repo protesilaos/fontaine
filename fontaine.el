@@ -508,13 +508,6 @@ The value is stored in `fontaine-latest-state-file'."
               (insert-file-contents file)
               (read (current-buffer)))))))
 
-;; ;; Recover last preset or fall back to desired style from
-;; ;; `fontaine-presets'.
-;; (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
-;; 
-;; ;; The other side of `fontaine-restore-latest-preset'.
-;; (add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
-
 ;;;###autoload
 (define-minor-mode fontaine-mode
   "Persist Fontaine presets.
