@@ -79,7 +79,7 @@
 
 (defconst fontaine-faces
   '( default fixed-pitch fixed-pitch-serif variable-pitch
-     mode-line-active mode-line-inactive
+     mode-line-active mode-line-inactive header-line
      line-number tab-bar tab-line
      bold italic)
   "List of faces with relevant font attributes.")
