@@ -659,7 +659,7 @@ Remember to read the relevant doc strings.
 
          :line-spacing nil)))
 
-;; Set last preset or fall back to desired style from `fontaine-presets'
+;; Set the last preset or fall back to desired style from `fontaine-presets'
 ;; (the `regular' in this case).
 (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
 
