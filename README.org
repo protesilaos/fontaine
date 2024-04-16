@@ -6,7 +6,7 @@
 #+startup:               content
 #+macro:                 stable-version 1.0.0
 #+macro:                 release-date 2023-02-11
-#+macro:                 development-version 1.1.0-dev
+#+macro:                 development-version 2.0.0-dev
 #+export_file_name:      fontaine.texi
 #+texinfo_filename:      fontaine.info
 #+texinfo_dir_category:  Emacs misc features
