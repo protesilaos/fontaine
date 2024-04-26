@@ -294,14 +294,14 @@ This is then used to restore the last value with the function
     ;; ;; Read this: <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45920>
     ;; ;; Hence why the following fails.  Keeping it for posterity...
     ;; (set-face-attribute face nil :family family :weight weight :height height)
-    (when (and (symbolp weight)
-               (not (null weight))
+    (when (and weight
+               (symbolp weight)
                (eq (face-attribute face :weight) weight)
                (stringp family))
       (internal-set-lisp-face-attribute face :family family frames))
-    (when (and (symbolp weight) (not (null weight)))
+    (when (and weight (symbolp weight))
       (internal-set-lisp-face-attribute face :weight weight frames))
-    (when (and (symbolp slant) (not (null slant)))
+    (when (and slant (symbolp slant))
       (internal-set-lisp-face-attribute face :slant slant frames))
     (when (stringp family)
       (internal-set-lisp-face-attribute face :family family frames))
