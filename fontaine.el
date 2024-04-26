@@ -50,6 +50,18 @@
   '(normal italic oblique reverse-italic reverse-oblique)
   "List of font slants.")
 
+(defvar fontaine-widths
+  '( ultra-condensed
+     extra-condensed
+     condensed
+     semi-condensed demi-condensed
+     normal medium regular
+     semi-expanded demi-expanded
+     expanded
+     extra-expanded
+     ultra-expanded)
+  "List of font widths.")
+
 (defconst fontaine--weights-widget
   '(choice :tag "Font weight (must be supported by the typeface)"
            (const :tag "Normal" normal)
@@ -77,6 +89,24 @@
            (const :tag "Use fallback value" nil))
   "Widget with font slants for `fontaine-presets'.")
 
+(defconst fontaine--widths-widget
+  '(choice :tag "Font width (must be supported by the typeface)"
+           (const ultra-condensed)
+           (const extra-condensed)
+           (const condensed)
+           (const semi-condensed)
+           (const :tag "Alias for semi-condensed" demi-condensed)
+           (const normal)
+           (const :tag "Alias for normal" medium)
+           (const :tag "Alias for normal" regular)
+           (const semi-expanded)
+           (const :tag "Alias for semi-expanded" demi-expanded)
+           (const expanded)
+           (const extra-expanded)
+           (const ultra-expanded)
+           (const :tag "Use fallback value" nil))
+  "Widget with font weights for `fontaine-presets'.")
+
 (defconst fontaine-faces
   '( default fixed-pitch fixed-pitch-serif variable-pitch
      mode-line-active mode-line-inactive header-line
@@ -90,6 +120,7 @@
    `((const :tag ,(format "%s font family" face) ,(intern (format ":%s-family" face))) string)
    `((const :tag ,(format "%s weight" face) ,(intern (format ":%s-weight" face))) ,fontaine--weights-widget)
    `((const :tag ,(format "%s slant" face) ,(intern (format ":%s-slant" face))) ,fontaine--slants-widget)
+   `((const :tag ,(format "%s width" face) ,(intern (format ":%s-width" face))) ,fontaine--widths-widget)
    `((const :tag ,(format "%s height" face) ,(intern (format ":%s-height" face))) float)))
 
 (defcustom fontaine-presets
@@ -184,8 +215,8 @@ For each face, Fontaine reads keywords that describe its font
 family, font weight, font slant, and font height.  The name of
 those keywords is composed from the name of the face plus th
 specifier.  For example, with the `default' face, we have
-`:default-family', `:default-height', `:default-weight', and
-`:default-slant'.
+`:default-family', `:default-height', `:default-weight',
+`:default-slant', and `:default-width'.
 
 The properties in more detail:
 
@@ -195,6 +226,8 @@ The properties in more detail:
 - The font weight is an unquoted symbol among `fontaine-weights'.
 
 - The font slant is an unquoted symbol among `fontaine-slants'.
+
+- The font width is an unquoted symbol among `fontaine-widths'.
 
 - The font height is a floating point (like 1.0) which is
   interpreted as a multiple of the default font height.  An
@@ -242,6 +275,7 @@ Caveats or further notes:
                  (((const :tag "Default font family" :default-family) string)
                   ((const :tag "Default weight" :default-weight) ,fontaine--weights-widget)
                   ((const :tag "Default slant" :default-slant) ,fontaine--slants-widget)
+                  ((const :tag "Default width" :default-width) ,fontaine--widths-widget)
                   ((const :tag "Default height" :default-height) natnum)
 
                   ,@(mapcan
@@ -288,8 +322,8 @@ This is then used to restore the last value with the function
    (frame nil)
    (t 0)))
 
-(defun fontaine--set-face-attributes (face family &optional weight slant height frame)
-  "Set FACE font to FAMILY, with optional WEIGHT, SLANT, HEIGHT, FRAME."
+(defun fontaine--set-face-attributes (face family &optional weight slant height width frame)
+  "Set FACE font to FAMILY, with optional WEIGHT, SLANT, HEIGHT, WIDTH, FRAME."
   (let ((frames (fontaine--frame frame)))
     ;; ;; Read this: <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45920>
     ;; ;; Hence why the following fails.  Keeping it for posterity...
@@ -301,6 +335,8 @@ This is then used to restore the last value with the function
       (internal-set-lisp-face-attribute face :family family frames))
     (when (and weight (symbolp weight))
       (internal-set-lisp-face-attribute face :weight weight frames))
+    (when (and width (symbolp width))
+      (internal-set-lisp-face-attribute face :width width frames))
     (when (and slant (symbolp slant))
       (internal-set-lisp-face-attribute face :slant slant frames))
     (when (stringp family)
@@ -343,6 +379,7 @@ If FRAME is nil, apply the effect to all frames."
      (plist-get properties (intern (format ":%s-weight" face)))
      (plist-get properties (intern (format ":%s-slant" face)))
      (plist-get properties (intern (format ":%s-height" face)))
+     (plist-get properties (intern (format ":%s-width" face)))
      frame)))
 
 (defun fontaine--set-faces (preset frame)

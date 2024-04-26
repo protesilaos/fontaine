@@ -66,6 +66,9 @@ modify this GNU manual.”
 :CUSTOM_ID: h:62d716b4-44f7-4078-85d2-29a7da8ca253
 :END:
 
+[ As part of {{{development-version}}}, the ~fontaine-presets~ also
+  support a width attribute. ]
+
 #+vindex: fontaine-presets
 Fontaine lets the user specify presets of font configurations and set
 them on demand on graphical Emacs frames.  The user option
