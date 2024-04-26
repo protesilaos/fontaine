@@ -241,6 +241,7 @@ Caveats or further notes:
           (plist :options
                  (((const :tag "Default font family" :default-family) string)
                   ((const :tag "Default weight" :default-weight) ,fontaine--weights-widget)
+                  ((const :tag "Default slant" :default-slant) ,fontaine--slants-widget)
                   ((const :tag "Default height" :default-height) natnum)
 
                   ,@(mapcan
