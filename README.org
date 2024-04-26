@@ -66,19 +66,10 @@ modify this GNU manual.”
 :CUSTOM_ID: h:62d716b4-44f7-4078-85d2-29a7da8ca253
 :END:
 
-[ The command ~fontaine-set-face-font~ is removed from the
-  {{{development-version}}} because it is not consistent with the rest
-  of the functionality of Fontaine. ]
-
 #+vindex: fontaine-presets
 Fontaine lets the user specify presets of font configurations and set
 them on demand on graphical Emacs frames.  The user option
 ~fontaine-presets~ holds all such presets.
-
-[ The support for the mode line, header line, line number, tab bar,
-  and tab line faces is part of {{{development-version}}}.  Same for
-  the introduction of the variables ~fontaine-weights~,
-  ~fontaine-slants~, ~fontaine-faces~. ]
 
 Presets consist of a list of properties that govern the family,
 weight, height, and slant of the faces listed in the value of the
@@ -175,11 +166,6 @@ in Emacs.
 
 [[#h:35bc7f51-6368-4718-ad25-b276a1f2cc08][Shared and implicit fallback values for presets]].
 
-[ As part of {{{development-version}}}, the ~fontaine-set-preset~
-  always prompts for a preset when called interactively, even if there
-  is only one preset available. This is how all prompts work in Emacs,
-  so better be consistent with them. ]
-
 #+findex: fontaine-set-preset
 The command ~fontaine-set-preset~ applies the desired preset. If
 called interactively, it produces a minibuffer prompt with completion
@@ -202,7 +188,6 @@ argument.
 
 #+vindex: fontaine-set-preset-hook
 As a final step, ~fontaine-set-preset~ calls the ~fontaine-set-preset-hook~.
-[ This is part of {{{development-version}}}. ]
 
 #+vindex: fontaine-latest-state-file
 #+findex: fontaine-store-latest-preset
@@ -679,8 +664,8 @@ Remember to read the relevant doc strings.
 :CUSTOM_ID: h:f1b48050-e8e1-4689-b92f-7776bbaa55a4
 :END:
 
-[ As part of {{{development-version}}}, there exists the
-  ~fontaine-mode~ which does this automatically. ]
+[ Since version =2.0.0=, there exists the ~fontaine-mode~ which does
+  this automatically. ]
 
 #+findex: fontaine-apply-current-preset
 #+vindex: fontaine-current-preset
@@ -703,8 +688,8 @@ a hook that is ran at the post ~load-theme~ phase.
 :CUSTOM_ID: h:8f76ca89-a20c-4d76-89e6-423f1d8691a4
 :END:
 
-[ As part of {{{development-version}}}, there exists the
-  ~fontaine-mode~ which does this automatically. ]
+[ Since version =2.0.0=, there exists the ~fontaine-mode~ which does
+  this automatically. ]
 
 Emacs 29 provides the ~enable-theme-functions~, which we can use to
 persist or restore a font preset thus ([[#h:f1b48050-e8e1-4689-b92f-7776bbaa55a4][Persist font configurations on theme switch]]):
@@ -718,8 +703,8 @@ persist or restore a font preset thus ([[#h:f1b48050-e8e1-4689-b92f-7776bbaa55a4
 :CUSTOM_ID: h:bf6cbff8-647a-45e8-b0e7-d7588414394b
 :END:
 
-[ As part of {{{development-version}}}, there exists the
-  ~fontaine-mode~ which does this automatically. ]
+[ Since version =2.0.0=, there exists the ~fontaine-mode~ which does
+  this automatically. ]
 
 For versions of Emacs before 29, there is no built-in theme-agnostic
 solution to persisting or restoring a font preset ([[#h:8f76ca89-a20c-4d76-89e6-423f1d8691a4][Theme-agnostic hook for Emacs 29 or higher]]).
