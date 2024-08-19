@@ -481,7 +481,7 @@ which this function ignores"
 
 ;;;###autoload
 (defun fontaine-store-latest-preset ()
-  "Write latest cursor state to `fontaine-latest-state-file'.
+  "Write latest state to `fontaine-latest-state-file'.
 Can be assigned to `kill-emacs-hook'."
   (when-let ((hist fontaine--preset-history)
              (latest (car hist))
