@@ -4,9 +4,9 @@
 #+language: en
 #+options: ':t toc:nil author:t email:t num:t
 #+startup: content
-#+macro: stable-version 2.0.0
-#+macro: release-date 2024-04-16
-#+macro: development-version 2.0.0-dev
+#+macro: stable-version 2.1.0
+#+macro: release-date 2024-09-02
+#+macro: development-version 2.2.0-dev
 #+export_file_name: fontaine.texi
 #+texinfo_filename: fontaine.info
 #+texinfo_dir_category: Emacs misc features
@@ -65,9 +65,6 @@ modify this GNU manual.”
 :PROPERTIES:
 :CUSTOM_ID: h:62d716b4-44f7-4078-85d2-29a7da8ca253
 :END:
-
-[ As part of {{{development-version}}}, the ~fontaine-presets~ also
-  support a width attribute. ]
 
 #+vindex: fontaine-presets
 Fontaine lets the user specify presets of font configurations and set
@@ -219,8 +216,7 @@ init file).
 The command ~fontaine-toggle-preset~ can toggle between the last two
 valid presets, as set by ~fontaine-set-preset~. If it cannot find two
 different presets, then it prompts using minibuffer completion. As a
-final step, it calls the ~fontaine-set-preset-hook~. [ The
-~fontaine-toggle-preset~ is part of {{{development-version}}}. ]
+final step, it calls the ~fontaine-set-preset-hook~.
 
 For users of the =no-littering= package, ~fontaine-latest-state-file~ is
 not stored in their =.emacs.d=, but in a standard directory instead:
