@@ -402,12 +402,24 @@ If FRAME is nil, apply the effect to all frames."
                symbol))
            fontaine-presets)))
 
-(defun fontaine--set-fonts-prompt ()
-  "Prompt for font set (used by `fontaine-set-fonts')."
+(defun fontaine--get-preset-symbols ()
+  "Return list of the `car' of each element in `fontain-presets'."
+  (delq nil
+        (mapcar
+         (lambda (element)
+           (when-let ((first (car element))
+                      (_ (not (eq first t))))
+             first))
+         fontaine-presets)))
+
+(defun fontaine--set-fonts-prompt (&optional prompt)
+  "Prompt for font set (used by `fontaine-set-fonts').
+If optional PROMPT string, use it for the prompt, else use one that asks
+for a preset among `fontaine-presets'."
   (let* ((def (nth 1 fontaine--font-display-hist))
-         (prompt (if def
-                     (format "Apply font configurations from PRESET [%s]: " def)
-                   "Apply font configurations from PRESET: ")))
+         (prompt (if prompt
+                     (format-prompt prompt nil)
+                   (format-prompt "Apply font configurations from PRESET" def))))
     (intern
      (completing-read
       prompt
@@ -473,6 +485,31 @@ which this function ignores"
            ((fontaine--preset-p current)))
       (fontaine-set-preset current)
     (user-error "The `fontaine-current-preset' is not among `fontaine-presets'")))
+
+(defun fontaine--get-first-non-current-preset (history)
+  "Return the first element of HISTORY which is not `fontaine-current-preset'.
+Only consider elements that are still part of the `fontaine-presets',
+per `fontaine--get-preset-symbols'."
+  (catch 'first
+    (dolist (element history)
+      (when (stringp element)
+        (setq element (intern element)))
+      (when (and (not (eq element fontaine-current-preset))
+                 (member element (fontaine--get-preset-symbols)))
+        (throw 'first element)))))
+
+;;;###autoload
+(defun fontaine-toggle-preset ()
+  "Toggle between the last two known Fontaine presets.
+These are the presets that were set with `fontaine-set-preset'.  If
+there are no two selected presets, then prompt the user to set a preset.
+
+As a final step, call the `fontaine-set-preset-hook'."
+  (interactive)
+  (fontaine-set-preset
+   (if-let ((previous (fontaine--get-first-non-current-preset fontaine--font-display-hist)))
+       previous
+     (fontaine--set-fonts-prompt "No previous preset to toggle; select PRESET"))))
 
 ;;;; Store and restore preset
 

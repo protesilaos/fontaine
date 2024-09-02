@@ -203,6 +203,13 @@ the =.emacs.d= directory).  Saving is done by the function
 function ~fontaine-restore-latest-preset~ (such as by adding it to their
 init file).
 
+#+findex: fontaine-toggle-preset
+The command ~fontaine-toggle-preset~ can toggle between the last two
+valid presets, as set by ~fontaine-set-preset~. If it cannot find two
+different presets, then it prompts using minibuffer completion. As a
+final step, it calls the ~fontaine-set-preset-hook~. [ The
+~fontaine-toggle-preset~ is part of {{{development-version}}}. ]
+
 For users of the =no-littering= package, ~fontaine-latest-state-file~ is
 not stored in their =.emacs.d=, but in a standard directory instead:
 https://github.com/emacscollective/no-littering.
