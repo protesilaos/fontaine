@@ -424,11 +424,28 @@ If FRAME is nil, apply the effect to all frames."
              first))
          fontaine-presets)))
 
+(defvar fontaine-current-preset nil
+  "Current font set in `fontaine-presets'.
+This is the preset last used by `fontaine-set-preset'.  Also see
+the command `fontaine-apply-current-preset'.")
+
+(defun fontaine--get-first-non-current-preset (history)
+  "Return the first element of HISTORY which is not `fontaine-current-preset'.
+Only consider elements that are still part of the `fontaine-presets',
+per `fontaine--get-preset-symbols'."
+  (catch 'first
+    (dolist (element history)
+      (when (stringp element)
+        (setq element (intern element)))
+      (when (and (not (eq element fontaine-current-preset))
+                 (member element (fontaine--get-preset-symbols)))
+        (throw 'first element)))))
+
 (defun fontaine--set-fonts-prompt (&optional prompt)
   "Prompt for font set (used by `fontaine-set-fonts').
 If optional PROMPT string, use it for the prompt, else use one that asks
 for a preset among `fontaine-presets'."
-  (let* ((def (nth 1 fontaine--font-display-hist))
+  (let* ((def (symbol-name (fontaine--get-first-non-current-preset fontaine--font-display-hist)))
          (prompt (if prompt
                      (format-prompt prompt nil)
                    (format-prompt "Apply font configurations from PRESET" def))))
@@ -437,11 +454,6 @@ for a preset among `fontaine-presets'."
       prompt
       (fontaine--presets-no-fallback)
       nil t nil 'fontaine--font-display-hist def))))
-
-(defvar fontaine-current-preset nil
-  "Current font set in `fontaine-presets'.
-This is the preset last used by `fontaine-set-preset'.  Also see
-the command `fontaine-apply-current-preset'.")
 
 ;;;###autoload
 (defun fontaine-set-preset (preset &optional frame)
@@ -497,18 +509,6 @@ which this function ignores"
            ((fontaine--preset-p current)))
       (fontaine-set-preset current)
     (user-error "The `fontaine-current-preset' is not among `fontaine-presets'")))
-
-(defun fontaine--get-first-non-current-preset (history)
-  "Return the first element of HISTORY which is not `fontaine-current-preset'.
-Only consider elements that are still part of the `fontaine-presets',
-per `fontaine--get-preset-symbols'."
-  (catch 'first
-    (dolist (element history)
-      (when (stringp element)
-        (setq element (intern element)))
-      (when (and (not (eq element fontaine-current-preset))
-                 (member element (fontaine--get-preset-symbols)))
-        (throw 'first element)))))
 
 ;;;###autoload
 (defun fontaine-toggle-preset ()
