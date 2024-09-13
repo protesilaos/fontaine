@@ -403,7 +403,7 @@ you some ideas:
 ;; Iosevka Comfy is my highly customised build of Iosevka with
 ;; monospaced and duospaced (quasi-proportional) variants as well as
 ;; support or no support for ligatures:
-;; <https://git.sr.ht/~protesilaos/iosevka-comfy>.
+;; <https://github.com/protesilaos/iosevka-comfy>.
 ;;
 ;; Iosevka Comfy            == monospaced, supports ligatures
 ;; Iosevka Comfy Fixed      == monospaced, no ligatures
