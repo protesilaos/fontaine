@@ -477,7 +477,7 @@ Set `fontaine-current-preset' to PRESET.  Also see the command
 Call `fontaine-set-preset-hook' as a final step."
   (interactive (list (fontaine--set-fonts-prompt) current-prefix-arg))
   (if (and (not (daemonp)) (not window-system))
-      (display-warning "Cannot use this in a terminal emulator; try the Emacs GUI")
+      (display-warning 'fontaine "Cannot use this in a terminal emulator; try the Emacs GUI")
     (fontaine--set-faces preset frame)
     (setq fontaine-current-preset preset)
     (unless frame
