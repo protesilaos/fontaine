@@ -41,6 +41,19 @@
   "Set font configurations using presets."
   :group 'font)
 
+;; NOTE 2025-01-06: This is what `use-package' does with its own
+;; theme, so it is probably the right approach for us too.
+(eval-and-compile
+  ;; Declare a synthetic theme for :custom variables.
+  ;; Necessary in order to avoid having those variables saved by custom.el.
+  (deftheme fontaine "Special theme for Fontaine fonts." :theme-immediate t))
+
+(enable-theme 'fontaine)
+;; Remove the synthetic fontaine theme from the enabled themes, so
+;; iterating over them to "disable all themes" won't disable it.
+(setq custom-enabled-themes (remq 'fontaine custom-enabled-themes))
+
+
 (defvar fontaine-weights
   '( thin ultralight extralight light semilight regular medium
      semibold bold heavy extrabold ultrabold)
@@ -325,37 +338,6 @@ This is then used to restore the last value with the function
   :package-version '(fontaine . "2.0.0")
   :group 'fontaine)
 
-;;;; General utilities
-
-(defun fontaine--frame (frame)
-  "Return FRAME for `internal-set-lisp-face-attribute'."
-  (cond
-   ((framep frame) frame)
-   (frame nil)
-   (t 0)))
-
-(defun fontaine--set-face-attributes (face family &optional weight slant height width frame)
-  "Set FACE font to FAMILY, with optional WEIGHT, SLANT, HEIGHT, WIDTH, FRAME."
-  (let ((frames (fontaine--frame frame)))
-    ;; ;; Read this: <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=45920>
-    ;; ;; Hence why the following fails.  Keeping it for posterity...
-    ;; (set-face-attribute face nil :family family :weight weight :height height)
-    (when (and weight
-               (symbolp weight)
-               (eq (face-attribute face :weight) weight)
-               (stringp family))
-      (internal-set-lisp-face-attribute face :family family frames))
-    (when (and weight (symbolp weight))
-      (internal-set-lisp-face-attribute face :weight weight frames))
-    (when (and width (symbolp width))
-      (internal-set-lisp-face-attribute face :width width frames))
-    (when (and slant (symbolp slant))
-      (internal-set-lisp-face-attribute face :slant slant frames))
-    (when (stringp family)
-      (internal-set-lisp-face-attribute face :family family frames))
-    (when (and (numberp height) (not (zerop height)))
-      (internal-set-lisp-face-attribute face :height height frames))))
-
 ;;;; Apply preset configurations
 
 (defun fontaine--preset-p (preset)
@@ -381,38 +363,48 @@ This is then used to restore the last value with the function
   "Get PRESET's PROPERTY."
   (plist-get (fontaine--get-preset-properties preset) property))
 
-(defun fontaine--set-face (preset face &optional frame)
-  "Set font properties taken from PRESET to FACE in optional FRAME.
-If FRAME is nil, apply the effect to all frames."
-  (let ((properties (fontaine--get-preset-properties preset)))
-    (fontaine--set-face-attributes
-     face
-     (plist-get properties (intern (format ":%s-family" face)))
-     (plist-get properties (intern (format ":%s-weight" face)))
-     (plist-get properties (intern (format ":%s-slant" face)))
-     (plist-get properties (intern (format ":%s-height" face)))
-     (plist-get properties (intern (format ":%s-width" face)))
-     frame)))
+(defun fontaine--get-property (face attribute properties)
+  "Get the fontaine property of FACE with ATTRIBUTE  in PROPERTIES."
+  (plist-get properties (intern (format ":%s-%s" face attribute))))
 
-(defun fontaine--set-faces (preset frame)
-  "Set all `fontaine-faces' according to PRESET in FRAME."
-  (mapc
-   (lambda (face)
-     (fontaine--set-face preset face frame))
-   fontaine-faces)
-  (setq-default line-spacing (fontaine--get-preset-property preset :line-spacing)))
+(defun fontaine--get-face-spec (preset face)
+  "Set font properties taken from PRESET to FACE."
+  (let* ((properties (fontaine--get-preset-properties preset))
+         (family (fontaine--get-property face "family" properties))
+         (weight (fontaine--get-property face "weight" properties))
+         (slant (fontaine--get-property face "slant" properties))
+         (height (fontaine--get-property face "height" properties))
+         (width (fontaine--get-property face "width" properties)))
+    `(,face
+      ((((type graphic))
+       ,@(when family (list :family family))
+       ,@(when weight (list :weight weight))
+       ,@(when slant (list :slant slant))
+       ,@(when height (list :height height))
+       ,@(when width (list :width width)))))))
+
+(defun fontaine--set-faces (preset)
+  "Set all `fontaine-faces' according to PRESET."
+  (let ((custom--inhibit-theme-enable nil))
+    (custom-theme-set-faces
+     'fontaine
+     (mapcan
+      (lambda (face)
+        (fontaine--get-face-spec preset face))
+      fontaine-faces))
+    (setq-default line-spacing (fontaine--get-preset-property preset :line-spacing))))
+
 
 (defvar fontaine--font-display-hist '()
   "History of inputs for display-related font associations.")
 
 (defun fontaine--presets-no-fallback ()
   "Return list of `fontaine-presets', minus the fallback value."
-  (delq
-   nil
-   (mapcar (lambda (symbol)
-             (unless (eq (car symbol) t)
-               symbol))
-           fontaine-presets)))
+  (delq nil
+        (mapcar (lambda (symbol)
+                  (unless (eq (car symbol) t)
+                    symbol))
+                fontaine-presets)))
 
 (defun fontaine--get-preset-symbols ()
   "Return list of the `car' of each element in `fontain-presets'."
@@ -456,59 +448,24 @@ for a preset among `fontaine-presets'."
       nil t nil 'fontaine--font-display-hist def))))
 
 ;;;###autoload
-(defun fontaine-set-preset (preset &optional frame)
+(defun fontaine-set-preset (preset)
   "Set font configurations specified in PRESET.
 PRESET is a symbol that represents the car of a list in
 `fontaine-presets'.  When called interactively, prompt for
-PRESET.g
-
-Unless optional FRAME argument is supplied, apply the change to
-all frames.  If FRAME satisfies `framep', then make the changes
-affect only it.  If FRAME is non-nil, interpret it as the current
-frame and apply the effects to it.
-
-When called interactively with a universal prefix
-argument (\\[universal-argument]), FRAME is interpreted as
-non-nil.
+PRESET.
 
 Set `fontaine-current-preset' to PRESET.  Also see the command
 `fontaine-apply-current-preset'.
 
 Call `fontaine-set-preset-hook' as a final step."
-  (interactive (list (fontaine--set-fonts-prompt) current-prefix-arg))
+  (interactive (list (fontaine--set-fonts-prompt)))
   (if (and (not (daemonp)) (not window-system))
-      (display-warning 'fontaine "Cannot use this in a terminal emulator; try the Emacs GUI")
-    (fontaine--set-faces preset frame)
+      (display-warning 'fontaine "Cannot use Fontaine in a terminal emulator; try the Emacs GUI")
+    (fontaine--set-faces preset)
     (setq fontaine-current-preset preset)
-    (unless frame
-      (add-to-history 'fontaine--preset-history (format "%s" preset)))
     (run-hooks 'fontaine-set-preset-hook)))
 
-;;;###autoload
-(defun fontaine-apply-current-preset (&rest _)
-  "Use `fontaine-set-preset' on `fontaine-current-preset'.
-The value of `fontaine-current-preset' must be one of the keys in
-`fontaine-presets'.
-
-Re-applying the current preset is useful when a new theme is
-loaded which overrides certain font families.  For example, if
-the theme defines the `bold' face without a `:family', loading
-that theme will make `bold' use the `default' family, even if the
-`fontaine-presets' are configured to have different families
-between the two.  In such a case, applying the current preset at
-the post `load-theme' phase (e.g. via a hook) ensures that font
-configurations remain consistent.
-
-Some themes that provide hooks of this sort are the
-`modus-themes', `ef-themes', `standard-themes' (all by
-Protesilaos).  Alternatively, Emacs 29 provides the special
-`enable-theme-functions' hook, which passes a THEME argument
-which this function ignores"
-  (interactive)
-  (if-let* ((current fontaine-current-preset)
-            ((fontaine--preset-p current)))
-      (fontaine-set-preset current)
-    (user-error "The `fontaine-current-preset' is not among `fontaine-presets'")))
+(make-obsolete 'fontaine-apply-current-preset nil "3.0.0")
 
 ;;;###autoload
 (defun fontaine-toggle-preset ()
@@ -519,21 +476,19 @@ there are no two selected presets, then prompt the user to set a preset.
 As a final step, call the `fontaine-set-preset-hook'."
   (interactive)
   (fontaine-set-preset
-   (if-let* ((previous (fontaine--get-first-non-current-preset fontaine--font-display-hist)))
-       previous
-     (fontaine--set-fonts-prompt "No previous preset to toggle; select PRESET"))))
+   (or (fontaine--get-first-non-current-preset fontaine--font-display-hist)
+       (fontaine--set-fonts-prompt "No previous preset to toggle; select PRESET"))))
 
 ;;;; Store and restore preset
 
-(defvar fontaine--preset-history '()
-  "Minibuffer history of preset configurations.")
+(defvar fontaine--preset-history nil
+  "History of preset configurations.")
 
 ;;;###autoload
 (defun fontaine-store-latest-preset ()
   "Write latest state to `fontaine-latest-state-file'.
 Can be assigned to `kill-emacs-hook'."
-  (when-let* ((hist fontaine--preset-history)
-              (latest (car hist))
+  (when-let* ((latest (car fontaine--preset-history))
               ((not (member latest '("nil" "t")))))
     (with-temp-file fontaine-latest-state-file
       (insert ";; Auto-generated file; don't edit -*- mode: "
@@ -564,22 +519,14 @@ The value is stored in `fontaine-latest-state-file'."
 (define-minor-mode fontaine-mode
   "Persist Fontaine presets.
 Arrange to store and restore the current Fontaine preset when
-closing and restarting Emacs.  Also, do it for theme switching,
-if the Emacs version is 29 or higher.
-
-[ Note that in older versions of Emacs we do not have a hook that
-  is called at the post-theme-load phase.  Users can do this by
-  installing an advice.  Read the Info node `(fontaine)
-  Theme-agnostic hook before Emacs 29'.  ]"
+closing and restarting Emacs."
   :global t
   (if fontaine-mode
       (progn
         (add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
-        (add-hook 'fontaine-set-preset-hook #'fontaine-store-latest-preset)
-        (add-hook 'enable-theme-functions #'fontaine-apply-current-preset))
+        (add-hook 'fontaine-set-preset-hook #'fontaine-store-latest-preset))
     (remove-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
-    (remove-hook 'fontaine-set-preset-hook #'fontaine-store-latest-preset)
-    (remove-hook 'enable-theme-functions #'fontaine-apply-current-preset)))
+    (remove-hook 'fontaine-set-preset-hook #'fontaine-store-latest-preset)))
 
 (provide 'fontaine)
 ;;; fontaine.el ends here
