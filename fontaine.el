@@ -365,15 +365,15 @@ This is then used to restore the last value with the function
 
 (defun fontaine--get-inherit-name (preset)
   "Get the `:inherit' value of PRESET."
-  (when-let ((inherit (plist-get (alist-get preset fontaine-presets) :inherit))
-             (fontaine--preset-p inherit))
+  (when-let* ((inherit (plist-get (alist-get preset fontaine-presets) :inherit))
+              (fontaine--preset-p inherit))
     inherit))
 
 (defun fontaine--get-preset-properties (preset)
   "Return list of properties for PRESET in `fontaine-presets'."
   (let ((presets fontaine-presets))
     (append (alist-get preset presets)
-            (when-let ((inherit (fontaine--get-inherit-name preset)))
+            (when-let* ((inherit (fontaine--get-inherit-name preset)))
               (alist-get inherit presets))
             (alist-get t presets))))
 
@@ -419,8 +419,8 @@ If FRAME is nil, apply the effect to all frames."
   (delq nil
         (mapcar
          (lambda (element)
-           (when-let ((first (car element))
-                      (_ (not (eq first t))))
+           (when-let* ((first (car element))
+                       (_ (not (eq first t))))
              first))
          fontaine-presets)))
 
@@ -505,8 +505,8 @@ Protesilaos).  Alternatively, Emacs 29 provides the special
 `enable-theme-functions' hook, which passes a THEME argument
 which this function ignores"
   (interactive)
-  (if-let ((current fontaine-current-preset)
-           ((fontaine--preset-p current)))
+  (if-let* ((current fontaine-current-preset)
+            ((fontaine--preset-p current)))
       (fontaine-set-preset current)
     (user-error "The `fontaine-current-preset' is not among `fontaine-presets'")))
 
@@ -519,7 +519,7 @@ there are no two selected presets, then prompt the user to set a preset.
 As a final step, call the `fontaine-set-preset-hook'."
   (interactive)
   (fontaine-set-preset
-   (if-let ((previous (fontaine--get-first-non-current-preset fontaine--font-display-hist)))
+   (if-let* ((previous (fontaine--get-first-non-current-preset fontaine--font-display-hist)))
        previous
      (fontaine--set-fonts-prompt "No previous preset to toggle; select PRESET"))))
 
@@ -532,9 +532,9 @@ As a final step, call the `fontaine-set-preset-hook'."
 (defun fontaine-store-latest-preset ()
   "Write latest state to `fontaine-latest-state-file'.
 Can be assigned to `kill-emacs-hook'."
-  (when-let ((hist fontaine--preset-history)
-             (latest (car hist))
-             ((not (member latest '("nil" "t")))))
+  (when-let* ((hist fontaine--preset-history)
+              (latest (car hist))
+              ((not (member latest '("nil" "t")))))
     (with-temp-file fontaine-latest-state-file
       (insert ";; Auto-generated file; don't edit -*- mode: "
               (if (<= 28 emacs-major-version)
@@ -550,8 +550,8 @@ Can be assigned to `kill-emacs-hook'."
 (defun fontaine-restore-latest-preset ()
   "Restore latest preset set by `fontaine-set-preset'.
 The value is stored in `fontaine-latest-state-file'."
-  (when-let ((file fontaine-latest-state-file)
-             ((file-exists-p file)))
+  (when-let* ((file fontaine-latest-state-file)
+              ((file-exists-p file)))
     (setq fontaine-recovered-preset
           (unless (zerop
                    (or (file-attribute-size (file-attributes file))
