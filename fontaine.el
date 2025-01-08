@@ -385,15 +385,13 @@ This is then used to restore the last value with the function
 
 (defun fontaine--set-faces (preset)
   "Set all `fontaine-faces' according to PRESET."
-  (let ((custom--inhibit-theme-enable nil))
-    (custom-theme-set-faces
-     'fontaine
-     (mapcan
-      (lambda (face)
-        (fontaine--get-face-spec preset face))
-      fontaine-faces))
+  (let ((custom--inhibit-theme-enable nil)
+        (faces (mapcar
+                (lambda (face)
+                  (fontaine--get-face-spec preset face))
+                fontaine-faces)))
+    (apply 'custom-theme-set-faces 'fontaine faces)
     (setq-default line-spacing (fontaine--get-preset-property preset :line-spacing))))
-
 
 (defvar fontaine--font-display-hist '()
   "History of inputs for display-related font associations.")

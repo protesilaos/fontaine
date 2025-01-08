@@ -763,7 +763,7 @@ Fontaine is meant to be a collective effort.  Every bit of help matters.
   Zaretskii, Florent Teissier, Jorge Gomez, Terry F. Torrey.
 
 + Ideas and user feedback :: Adam Porter (alphapapa), Ashlin Eldridge,
-  Joe Higton, Ted Reed.
+  Joe Higton, Haruko, Ted Reed.
 
 * GNU Free Documentation License
 :PROPERTIES:
