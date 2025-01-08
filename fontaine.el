@@ -420,7 +420,7 @@ If FRAME is nil, apply the effect to all frames."
         (mapcar
          (lambda (element)
            (when-let* ((first (car element))
-                       (_ (not (eq first t))))
+                       ((not (eq first t))))
              first))
          fontaine-presets)))
 
