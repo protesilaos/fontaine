@@ -46,7 +46,7 @@
 (eval-and-compile
   ;; Declare a synthetic theme for :custom variables.
   ;; Necessary in order to avoid having those variables saved by custom.el.
-  (deftheme fontaine "Special theme for Fontaine fonts." :theme-immediate t))
+  (deftheme fontaine "Special theme for Fontaine fonts."))
 
 (enable-theme 'fontaine)
 ;; Remove the synthetic fontaine theme from the enabled themes, so
