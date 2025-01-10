@@ -477,9 +477,10 @@ there are no two selected presets, then prompt the user to set a preset.
 
 As a final step, call the `fontaine-set-preset-hook'."
   (interactive)
-  (fontaine-set-preset
-   (or (intern (fontaine--get-first-non-current-preset fontaine-preset-history))
-       (fontaine-preset-prompt "No previous preset to toggle; select PRESET"))))
+  (if-let* ((preset (or (intern (fontaine--get-first-non-current-preset fontaine-preset-history))
+                        (fontaine-preset-prompt "No previous preset to toggle; select PRESET"))))
+      (fontaine-set-preset preset)
+    (error "Could not find a Fontaine preset to toggle")))
 
 ;;;; Store and restore preset
 
