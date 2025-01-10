@@ -393,8 +393,7 @@ This is then used to restore the last value with the function
     (apply 'custom-theme-set-faces 'fontaine faces)
     (setq-default line-spacing (fontaine--get-preset-property preset :line-spacing))))
 
-(defvar fontaine--font-display-hist '()
-  "History of inputs for display-related font associations.")
+(make-obsolete 'fontaine--font-display-hist nil "3.0.0")
 
 (defun fontaine--presets-no-fallback ()
   "Return list of `fontaine-presets', minus the fallback value."
@@ -414,6 +413,10 @@ This is then used to restore the last value with the function
              first))
          fontaine-presets)))
 
+(defun fontaine--get-preset-symbols-as-strings ()
+  "Convert `fontaine--get-preset-symbols' return value to list of string."
+  (mapcar #'symbol-name (fontaine--get-preset-symbols)))
+
 (defvar fontaine-current-preset nil
   "Current font set in `fontaine-presets'.
 This is the preset last used by `fontaine-set-preset'.  Also see
@@ -425,25 +428,26 @@ Only consider elements that are still part of the `fontaine-presets',
 per `fontaine--get-preset-symbols'."
   (catch 'first
     (dolist (element history)
-      (when (stringp element)
-        (setq element (intern element)))
-      (when (and (not (eq element fontaine-current-preset))
-                 (member element (fontaine--get-preset-symbols)))
+      (when (symbolp element)
+        (setq element (symbol-name element)))
+      (when (and (not (string= element fontaine-current-preset))
+                 (member element (fontaine--get-preset-symbols-as-strings)))
         (throw 'first element)))))
 
-(defun fontaine--set-fonts-prompt (&optional prompt)
-  "Prompt for font set (used by `fontaine-set-fonts').
-If optional PROMPT string, use it for the prompt, else use one that asks
-for a preset among `fontaine-presets'."
-  (let* ((def (symbol-name (fontaine--get-first-non-current-preset fontaine--font-display-hist)))
-         (prompt (if prompt
-                     (format-prompt prompt nil)
-                   (format-prompt "Apply font configurations from PRESET" def))))
+(defvar fontaine-preset-history nil
+  "Minibuffer history of `fontaine-preset-prompt'.")
+
+(defun fontaine-preset-prompt (&optional prompt-text)
+  "Prompt for preset among `fontaine-presets'.
+With optional PROMPT-TEXT, use it instead of the generic prompt."
+  (let ((default (fontaine--get-first-non-current-preset fontaine-preset-history)))
     (intern
      (completing-read
-      prompt
+      (if prompt-text
+          (format-prompt prompt-text nil)
+        (format-prompt "Apply font configurations from PRESET" default))
       (fontaine--presets-no-fallback)
-      nil t nil 'fontaine--font-display-hist def))))
+      nil t nil 'fontaine-preset-history default))))
 
 ;;;###autoload
 (defun fontaine-set-preset (preset)
@@ -456,9 +460,11 @@ Set `fontaine-current-preset' to PRESET.  Also see the command
 `fontaine-apply-current-preset'.
 
 Call `fontaine-set-preset-hook' as a final step."
-  (interactive (list (fontaine--set-fonts-prompt)))
+  (interactive (list (fontaine-preset-prompt)))
   (if (and (not (daemonp)) (not window-system))
       (display-warning 'fontaine "Cannot use Fontaine in a terminal emulator; try the Emacs GUI")
+    (unless (fontaine--preset-p preset)
+      (user-error "The preset `%s' is not among the `fontaine-presets'" preset))
     (fontaine--set-faces preset)
     (setq fontaine-current-preset preset)
     (run-hooks 'fontaine-set-preset-hook)))
@@ -474,19 +480,18 @@ there are no two selected presets, then prompt the user to set a preset.
 As a final step, call the `fontaine-set-preset-hook'."
   (interactive)
   (fontaine-set-preset
-   (or (fontaine--get-first-non-current-preset fontaine--font-display-hist)
-       (fontaine--set-fonts-prompt "No previous preset to toggle; select PRESET"))))
+   (or (intern (fontaine--get-first-non-current-preset fontaine-preset-history))
+       (fontaine-preset-prompt "No previous preset to toggle; select PRESET"))))
 
 ;;;; Store and restore preset
 
-(defvar fontaine--preset-history nil
-  "History of preset configurations.")
+(make-obsolete 'fontaine--preset-history nil "3.0.0")
 
 ;;;###autoload
 (defun fontaine-store-latest-preset ()
   "Write latest state to `fontaine-latest-state-file'.
 Can be assigned to `kill-emacs-hook'."
-  (when-let* ((latest (car fontaine--preset-history))
+  (when-let* ((latest (car fontaine-preset-history))
               ((not (member latest '("nil" "t")))))
     (with-temp-file fontaine-latest-state-file
       (insert ";; Auto-generated file; don't edit -*- mode: "
