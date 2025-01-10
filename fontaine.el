@@ -364,7 +364,7 @@ This is then used to restore the last value with the function
   (plist-get (fontaine--get-preset-properties preset) property))
 
 (defun fontaine--get-property (face attribute properties)
-  "Get the fontaine property of FACE with ATTRIBUTE  in PROPERTIES."
+  "Get the fontaine property of FACE with ATTRIBUTE in PROPERTIES."
   (plist-get properties (intern (format ":%s-%s" face attribute))))
 
 (defun fontaine--get-face-spec (preset face)
