@@ -443,9 +443,7 @@ With optional PROMPT-TEXT, use it instead of the generic prompt."
   (let ((default (fontaine--get-first-non-current-preset fontaine-preset-history)))
     (intern
      (completing-read
-      (if prompt-text
-          (format-prompt prompt-text nil)
-        (format-prompt "Apply font configurations from PRESET" default))
+      (format-prompt (or prompt-text "Apply font configurations from PRESET") default)
       (fontaine--presets-no-fallback)
       nil t nil 'fontaine-preset-history default))))
 
