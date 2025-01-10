@@ -395,13 +395,17 @@ This is then used to restore the last value with the function
 
 (make-obsolete 'fontaine--font-display-hist nil "3.0.0")
 
+(defun fontaine-not-t-p (symbol)
+  "Return non-nil if SYMBOL is `symbolp' and not t."
+  (and (symbolp symbol)
+       (not (eq symbol t))))
+
 (defun fontaine--presets-no-fallback ()
   "Return list of `fontaine-presets', minus the fallback value."
-  (delq nil
-        (mapcar (lambda (symbol)
-                  (unless (eq (car symbol) t)
-                    symbol))
-                fontaine-presets)))
+  (seq-filter
+   (lambda (preset)
+     (fontaine-not-t-p (car preset)))
+   fontaine-presets))
 
 (defun fontaine--get-preset-symbols ()
   "Return list of the `car' of each element in `fontain-presets'."
@@ -409,7 +413,7 @@ This is then used to restore the last value with the function
         (mapcar
          (lambda (element)
            (when-let* ((first (car element))
-                       ((not (eq first t))))
+                       ((fontaine-not-t-p first)))
              first))
          fontaine-presets)))
 
