@@ -423,8 +423,7 @@ This is then used to restore the last value with the function
 
 (defvar fontaine-current-preset nil
   "Current font set in `fontaine-presets'.
-This is the preset last used by `fontaine-set-preset'.  Also see
-the command `fontaine-apply-current-preset'.")
+This is the preset last used by `fontaine-set-preset'.")
 
 (defun fontaine--get-first-non-current-preset (history)
   "Return the first element of HISTORY which is not `fontaine-current-preset'.

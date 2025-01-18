@@ -683,7 +683,9 @@ Remember to read the relevant doc strings.
 :END:
 
 [ Since version =2.0.0=, there exists the ~fontaine-mode~ which does
-  this automatically. ]
+  this automatically. The =fontaine-apply-current-preset= is obsolete
+  as of {{{development-version}}} because Fontaine is now implemented
+  as a "theme" and thus does not get overwritten by other themes. ]
 
 #+findex: fontaine-apply-current-preset
 #+vindex: fontaine-current-preset
@@ -707,7 +709,9 @@ a hook that is ran at the post ~load-theme~ phase.
 :END:
 
 [ Since version =2.0.0=, there exists the ~fontaine-mode~ which does
-  this automatically. ]
+  this automatically. The =fontaine-apply-current-preset= is obsolete
+  as of {{{development-version}}} because Fontaine is now implemented
+  as a "theme" and thus does not get overwritten by other themes. ]
 
 Emacs 29 provides the ~enable-theme-functions~, which we can use to
 persist or restore a font preset thus ([[#h:f1b48050-e8e1-4689-b92f-7776bbaa55a4][Persist font configurations on theme switch]]):
@@ -722,7 +726,9 @@ persist or restore a font preset thus ([[#h:f1b48050-e8e1-4689-b92f-7776bbaa55a4
 :END:
 
 [ Since version =2.0.0=, there exists the ~fontaine-mode~ which does
-  this automatically. ]
+  this automatically. The =fontaine-apply-current-preset= is obsolete
+  as of {{{development-version}}} because Fontaine is now implemented
+  as a "theme" and thus does not get overwritten by other themes. ]
 
 For versions of Emacs before 29, there is no built-in theme-agnostic
 solution to persisting or restoring a font preset ([[#h:8f76ca89-a20c-4d76-89e6-423f1d8691a4][Theme-agnostic hook for Emacs 29 or higher]]).
