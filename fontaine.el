@@ -457,18 +457,19 @@ PRESET is a symbol that represents the car of a list in
 `fontaine-presets'.  When called interactively, prompt for
 PRESET.
 
-Set `fontaine-current-preset' to PRESET.  Also see the command
-`fontaine-apply-current-preset'.
-
-Call `fontaine-set-preset-hook' as a final step."
+Set `fontaine-current-preset' to PRESET.  Call
+`fontaine-set-preset-hook' as a final step after setting the PRESET."
   (interactive (list (fontaine-preset-prompt)))
-  (if (and (not (daemonp)) (not window-system))
-      (display-warning 'fontaine "Cannot use Fontaine in a terminal emulator; try the Emacs GUI")
-    (unless (fontaine--preset-p preset)
-      (user-error "The preset `%s' is not among the `fontaine-presets'" preset))
+  (cond
+   ((and (not (daemonp)) (not window-system))
+    (display-warning 'fontaine "Cannot use Fontaine in a terminal emulator; try the Emacs GUI"))
+   ((fontaine--preset-p preset)
     (fontaine--set-faces preset)
     (setq fontaine-current-preset preset)
-    (run-hooks 'fontaine-set-preset-hook)))
+    (run-hooks 'fontaine-set-preset-hook))
+   (t
+    (display-warning 'fontaine (format-message "The preset `%s' is not among the `fontaine-presets'" preset))
+    nil)))
 
 (make-obsolete 'fontaine-apply-current-preset nil "3.0.0")
 
