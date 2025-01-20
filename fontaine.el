@@ -370,7 +370,9 @@ This is then used to restore the last value with the function
 (defun fontaine--get-face-spec (preset face)
   "Set font properties taken from PRESET to FACE."
   (let* ((properties (fontaine--get-preset-properties preset))
-         (family (fontaine--get-property face "family" properties))
+         (family (or (fontaine--get-property face "family" properties)
+                     (and (eq face 'fixed-pitch)
+                          (fontaine--get-property 'default "family" properties))))
          (weight (fontaine--get-property face "weight" properties))
          (slant (fontaine--get-property face "slant" properties))
          (height (fontaine--get-property face "height" properties))
