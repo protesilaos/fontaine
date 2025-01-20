@@ -351,13 +351,21 @@ This is then used to restore the last value with the function
               (fontaine--preset-p inherit))
     inherit))
 
+(defconst fontaine-generic-face-families
+  '(:default-family "Monospace"
+    :fixed-pitch-family "Monospace"
+    :fixed-pitch-serif-family "Monospace"
+    :variable-pitch-family "Sans")
+  "Preset with generic font families for internal use.")
+
 (defun fontaine--get-preset-properties (preset)
   "Return list of properties for PRESET in `fontaine-presets'."
   (let ((presets fontaine-presets))
     (append (alist-get preset presets)
             (when-let* ((inherit (fontaine--get-inherit-name preset)))
               (alist-get inherit presets))
-            (alist-get t presets))))
+            (or (alist-get t presets)
+                fontaine-generic-face-families))))
 
 (defun fontaine--get-preset-property (preset property)
   "Get PRESET's PROPERTY."
