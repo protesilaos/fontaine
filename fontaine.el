@@ -153,7 +153,7 @@
      :default-width normal
      :default-height 100
 
-     :fixed-pitch-family nil
+     :fixed-pitch-family "Monospace"
      :fixed-pitch-weight nil
      :fixed-pitch-slant nil
      :fixed-pitch-width nil
