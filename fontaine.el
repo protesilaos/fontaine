@@ -385,13 +385,14 @@ This is then used to restore the last value with the function
          (slant (fontaine--get-property face "slant" properties))
          (height (fontaine--get-property face "height" properties))
          (width (fontaine--get-property face "width" properties)))
-    `(,face
-      ((((type graphic))
-       ,@(when family (list :family family))
-       ,@(when weight (list :weight weight))
-       ,@(when slant (list :slant slant))
-       ,@(when height (list :height height))
-       ,@(when width (list :width width)))))))
+    (when (or family weight slant height width)
+      `(,face
+        ((((type graphic))
+          ,@(when family (list :family family))
+          ,@(when weight (list :weight weight))
+          ,@(when slant (list :slant slant))
+          ,@(when height (list :height height))
+          ,@(when width (list :width width))))))))
 
 (defun fontaine--set-faces (preset)
   "Set all `fontaine-faces' according to PRESET."
