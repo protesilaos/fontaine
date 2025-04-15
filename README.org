@@ -188,8 +188,7 @@ among the available presets. When called from Lisp, it requires a
 (fontaine-set-preset 'regular)
 #+end_src
 
-The default behaviour of ~fontaine-set-preset~ is to change fonts across
-all graphical frames.
+~fontaine-set-preset~ is to change fonts across all graphical frames.
 
 #+vindex: fontaine-set-preset-hook
 As a final step, ~fontaine-set-preset~ calls the ~fontaine-set-preset-hook~.
