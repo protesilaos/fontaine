@@ -698,6 +698,8 @@ a hook that is ran at the post ~load-theme~ phase.
 :CUSTOM_ID:       h:9025fabf-d238-4923-8011-da4b80ad5cec
 :END:
 
+[ Fontaine does this automatically as of {{{development-version}}}. ]
+
 If using a non-tiling window manager e.g. GNOME/KDE, when a new preset
 is applied the frame may be resized in order to preserve the number of
 columns or lines it displays.
