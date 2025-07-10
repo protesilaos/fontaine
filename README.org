@@ -693,6 +693,20 @@ a hook that is ran at the post ~load-theme~ phase.
 - [[#h:8f76ca89-a20c-4d76-89e6-423f1d8691a4][Theme-agnostic hook for Emacs 29 or higher]]
 - [[#h:bf6cbff8-647a-45e8-b0e7-d7588414394b][Theme-agnostic hook before Emacs 29]]
 
+** Persist frame size on non-auto tiling window managers
+:PROPERTIES:
+:CUSTOM_ID:       h:9025fabf-d238-4923-8011-da4b80ad5cec
+:END:
+
+If using a non-tiling window manager e.g. GNOME/KDE, when a new preset
+is applied the frame may be resized in order to preserve the number of
+columns or lines it displays.
+To disable this feature set =frame-inhibit-implied-resize= to =t=.
+
+#+begin_src emacs-lisp
+(setq frame-inhibit-implied-resize t)
+#+end_src
+
 ** Theme-agnostic hook for Emacs 29 or higher
 :PROPERTIES:
 :CUSTOM_ID: h:8f76ca89-a20c-4d76-89e6-423f1d8691a4
