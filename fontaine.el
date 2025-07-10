@@ -394,9 +394,16 @@ This is then used to restore the last value with the function
           ,@(when height (list :height height))
           ,@(when width (list :width width))))))))
 
+(defvar fontaine--frame-inhibit-implied-resize
+  (if (>= emacs-major-version 31)
+      'force
+    t)
+  "Specific non-nil value to inhibit implied frame resize.")
+
 (defun fontaine--set-faces (preset)
   "Set all `fontaine-faces' according to PRESET."
   (let ((custom--inhibit-theme-enable nil)
+        (frame-inhibit-implied-resize fontaine--frame-inhibit-implied-resize)
         (faces (mapcar
                 (lambda (face)
                   (fontaine--get-face-spec preset face))
