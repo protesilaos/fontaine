@@ -409,7 +409,11 @@ This is then used to restore the last value with the function
                   (fontaine--get-face-spec preset face))
                 fontaine-faces)))
     (apply 'custom-theme-set-faces 'fontaine faces)
-    (setq-default line-spacing (fontaine--get-preset-property preset :line-spacing))))
+    (when-let* ((spacing (fontaine--get-preset-property preset :line-spacing))
+                (_ (or (numberp spacing)
+                       (and (>= emacs-major-version 31)
+                            (consp spacing)))))
+      (setq-default line-spacing spacing))))
 
 (make-obsolete 'fontaine--font-display-hist nil "3.0.0")
 
